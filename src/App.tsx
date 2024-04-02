@@ -12,8 +12,8 @@ import { SearchAndAbout } from '~/views/Home';
 import { ErrorBoundary } from 'react-error-boundary';
 import { StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
+// import RNBootSplash from 'react-native-bootsplash';
 import ErrorFallback from '~/components/ErrorFallback';
-import RNBootSplash from 'react-native-bootsplash';
 import loadable from '@loadable/component';
 import Header from '~/components/Header';
 
@@ -45,7 +45,7 @@ const NavigationScreen = ({ ready = false }: NavigationScreenProps) => {
 
   useEffect(() => {
     if (ready && launchStatus === AsyncStatus.Fulfilled) {
-      RNBootSplash.hide();
+      // RNBootSplash.hide();
     }
   }, [ready, launchStatus]);
   useMessageToast();
@@ -84,7 +84,7 @@ const App = () => {
     <GestureHandlerRootView style={styles.wrapper}>
       <Provider store={store}>
         <NativeBaseProvider theme={customTheme}>
-          <NavigationContainer ref={navigationRef} onReady={() => setReady(true)}>
+          <NavigationContainer independent ref={navigationRef} onReady={() => setReady(true)}>
             <NavigationScreen ready={ready} />
             <PrehandleDrawer />
           </NavigationContainer>

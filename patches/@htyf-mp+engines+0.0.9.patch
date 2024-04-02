@@ -1,0 +1,31 @@
+diff --git a/node_modules/@htyf-mp/engines/devPkg.json b/node_modules/@htyf-mp/engines/devPkg.json
+index 5ae9a5b..45847fc 100644
+--- a/node_modules/@htyf-mp/engines/devPkg.json
++++ b/node_modules/@htyf-mp/engines/devPkg.json
+@@ -104,7 +104,7 @@
+   "@react-navigation/native-stack": "6.9.26",
+   "@react-navigation/stack": "6.3.29",
+   "@realm/fetch": "0.1.1",
+-  "@reduxjs/toolkit": "2.2.2",
++  "@reduxjs/toolkit": "1.8.1",
+   "@sayem314/react-native-keep-awake": "1.2.3",
+   "@sentry/react-native": "5.20.0",
+   "@shopify/flash-list": "1.6.4",
+@@ -156,7 +156,7 @@
+   "ffmpeg-kit-react-native": "6.0.2",
+   "flubber": "0.4.2",
+   "iconv-lite": "0.6.3",
+-  "immer": "10.0.4",
++  "immer": "9.0.21",
+   "immutable": "4.3.5",
+   "jcore-react-native": "2.1.6",
+   "jpush-react-native": "3.0.6",
+@@ -262,7 +262,7 @@
+   "realm": "12.6.2",
+   "redux-logger": "3.0.6",
+   "redux-persist": "6.0.0",
+-  "redux-saga": "1.3.0",
++  "redux-saga": "1.1.3",
+   "rn-update-apk": "5.0.0",
+   "simplex-noise": "4.0.1",
+   "socket.io-client": "4.7.5",

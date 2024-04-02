@@ -87,7 +87,8 @@ const About = () => {
             {release.name}
           </Text>
           <Text fontSize="md" fontWeight="bold" color="purple.900">
-            {`${release.publishTime}  ${release.version}`}
+            {/* {`${release.publishTime}  ${release.version}`} */}
+            {`${process.env.PUBLISH_TIME} ${process.env.VERSION}`}
           </Text>
         </VStack>
 

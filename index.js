@@ -6,6 +6,7 @@ import { name } from './app.json';
 import dayjs from 'dayjs';
 import App from '~/App';
 import * as packageJson from './package.json';
+import { MiniAppsEnginesProvider } from '@htyf-mp/engines'
 
 require('dayjs/locale/zh-cn');
 
@@ -27,4 +28,10 @@ CacheManager.config = {
   thumbnailAnimationDuration: 500,
 };
 
-AppRegistry.registerComponent(name, () => App);
+const Root = () => {
+  return <MiniAppsEnginesProvider>
+    <App />
+  </MiniAppsEnginesProvider>
+}
+
+AppRegistry.registerComponent(name, () => Root);

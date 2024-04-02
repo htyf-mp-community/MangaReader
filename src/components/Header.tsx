@@ -1,5 +1,5 @@
 import React, { Fragment, useMemo } from 'react';
-import { StatusBar, HStack, Text, useTheme } from 'native-base';
+import { StatusBar, HStack, Text, useTheme, View } from 'native-base';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { getHeaderTitle } from '@react-navigation/elements';
 import VectorIcon from '~/components/VectorIcon';
@@ -55,6 +55,7 @@ const Header = ({ navigation, options, route, enableShake = false }: HeaderProps
         </HStack>
 
         {Right}
+        <View style={{width: 85}} />
       </HStack>
     </Fragment>
   );
