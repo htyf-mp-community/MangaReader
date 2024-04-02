@@ -1,3 +1,11 @@
+## [红糖云服app下载 https://mp.dagouzhi.com/ ](https://mp.dagouzhi.com/)
+
+### 使用红糖云服app 扫码添加小程序
+
+[![小程序码](./qrcode.png)]()
+
+>更多小程序demo 请查看[https://github.com/htyf-mp-community/demo](https://github.com/htyf-mp-community/demo)
+
 # MangaReader
 
 ![platform](https://img.shields.io/badge/platform-android%20%7C%20ios-brightgreen)

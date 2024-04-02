@@ -4,9 +4,10 @@
   "publishTime": "2024-03-31",
   "private": true,
   "scripts": {
+    "run:scripts": "node ./scripts/index.js",
     "dgz": "htyf-mp",
     "dgz:init": "htyf-mp --init",
-    "build:dgz": "htyf-mp --build",
+    "build:dgz": "npm run run:scripts && htyf-mp --build",
     "start": "react-native webpack-start -- --reset-cache",
     "android": "react-native run-android",
     "android-release": "react-native run-android --mode release",
