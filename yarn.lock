@@ -2234,10 +2234,10 @@
   resolved "https://registry.npmmirror.com/@hromovp/react-native-static-server/-/react-native-static-server-0.5.5.tgz#c8ae66e4b6a5729a34de97bd17c216b81018842b"
   integrity sha512-0edx/cwOU9+Nd7Owz+qjfV/L7ImFneHw7DiBdYBL39Ffxkcij1qnwRyLm4AdqL+/xV+25AUfAlz9t4y/u+N9Zw==
 
-"@htyf-mp/engines@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.npmmirror.com/@htyf-mp/engines/-/engines-0.0.9.tgz#bb5044d4e7a59c617af7448648bd0bcf2f5d122e"
-  integrity sha512-amhGH3/GsvVNEehMxORUuJ7YQHyEHUHg2GeJ78/O6yxGLB++2I/bqFH6iO4uf3h3ZcVTJj3pU933FBnM/kHOug==
+"@htyf-mp/engines@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@htyf-mp/engines/-/engines-0.0.10.tgz#25ce960bc801bb164b2ad9a374f71935ab1ca88b"
+  integrity sha512-sWmzrHmYGAtfBpEAbIHM+EsQ4T+btLlBJItVZdUU/beK47XFcTQzTydrgxiGVhXfRGKR+cFC1GC4lPxevuxe/w==
   dependencies:
     "@callstack/repack" "^3.7.0"
     "@gorhom/bottom-sheet" "^4.6.0"
@@ -2271,9 +2271,9 @@
     webpack-cli "^5.1.4"
     yarn-add-no-save "^1.0.3"
 
-"@htyf-mp/js-sdk@0.0.10":
+"@htyf-mp/js-sdk@^0.0.10":
   version "0.0.10"
-  resolved "https://registry.npmmirror.com/@htyf-mp/js-sdk/-/js-sdk-0.0.10.tgz#514d34f3f3cfbbbb15d00e5a1bf327a08e97b43c"
+  resolved "https://registry.yarnpkg.com/@htyf-mp/js-sdk/-/js-sdk-0.0.10.tgz#514d34f3f3cfbbbb15d00e5a1bf327a08e97b43c"
   integrity sha512-BISjgNIUv65dwcPaQ2ONp0nbV9BjluyGfIY3meugvDlCFLg7HIusXfqhEbNdiDQ6vhb5CgHbkL1SgigpbE0ztw==
   dependencies:
     "@fingerprintjs/fingerprintjs" "^3.3.3"
@@ -4839,7 +4839,7 @@
   resolved "https://registry.npmmirror.com/@realm/fetch/-/fetch-0.1.1.tgz#1a637d0a1fc3734a7ffca64361d764777dd3d80c"
   integrity sha512-hkTprw79RXGv54Je0DrjpQPLaz4QID2dO3FmthAQQWAkqwyrqMzrCGzJzLlmTKWZFsgLrN8KQyNewod27P+nJg==
 
-"@redux-saga/core@^1.1.3", "@redux-saga/core@^1.3.0":
+"@redux-saga/core@^1.1.3":
   version "1.3.0"
   resolved "https://registry.npmmirror.com/@redux-saga/core/-/core-1.3.0.tgz#2ce08b73d407fc6ea9e7f7d83d2e97d981a3a8b8"
   integrity sha512-L+i+qIGuyWn7CIg7k1MteHGfttKPmxwZR5E7OsGikCL2LzYA0RERlaUY00Y3P3ZV2EYgrsYlBrGs6cJP5OKKqA==
@@ -4891,16 +4891,6 @@
     redux "^4.1.2"
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
-
-"@reduxjs/toolkit@2.2.2":
-  version "2.2.2"
-  resolved "https://registry.npmmirror.com/@reduxjs/toolkit/-/toolkit-2.2.2.tgz#952fc8f8315d7274e28f6e4608b7ec66fce7e94e"
-  integrity sha512-454GZrEx3G6QSYwIx9ROaso1HR6sTH8qyZBe3KEsdWVGU3ayV8jYCwdaEJV3vl9V6+pi3GRl+7Xl7AeDna6qwQ==
-  dependencies:
-    immer "^10.0.3"
-    redux "^5.0.1"
-    redux-thunk "^3.1.0"
-    reselect "^5.0.1"
 
 "@rnx-kit/console@^1.0.0":
   version "1.0.12"
@@ -12051,12 +12041,7 @@ immediate@~3.0.5:
   resolved "https://registry.npmmirror.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==
 
-immer@10.0.4, immer@^10.0.3, immer@^9.0.7:
-  version "10.0.4"
-  resolved "https://registry.npmmirror.com/immer/-/immer-10.0.4.tgz#09af41477236b99449f9d705369a4daaf780362b"
-  integrity sha512-cuBuGK40P/sk5IzWa9QPUaAdvPHjkk1c+xYsd9oZw+YQQEV+10G0P5uMpGctZZKnyQ+ibRO08bD25nWLmYi2pw==
-
-immer@9.0.21:
+immer@9.0.21, immer@^9.0.7:
   version "9.0.21"
   resolved "https://registry.npmmirror.com/immer/-/immer-9.0.21.tgz#1e025ea31a40f24fb064f1fef23e931496330176"
   integrity sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==
@@ -18140,31 +18125,19 @@ redux-persist@6.0.0:
   resolved "https://registry.npmmirror.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
   integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
 
-redux-saga@1.1.3:
+redux-saga@1.1.3, redux-saga@^1.0.2:
   version "1.1.3"
   resolved "https://registry.npmmirror.com/redux-saga/-/redux-saga-1.1.3.tgz#9f3e6aebd3c994bbc0f6901a625f9a42b51d1112"
   integrity sha512-RkSn/z0mwaSa5/xH/hQLo8gNf4tlvT18qXDNvedihLcfzh+jMchDgaariQoehCpgRltEm4zHKJyINEz6aqswTw==
   dependencies:
     "@redux-saga/core" "^1.1.3"
 
-redux-saga@1.3.0, redux-saga@^1.0.2:
-  version "1.3.0"
-  resolved "https://registry.npmmirror.com/redux-saga/-/redux-saga-1.3.0.tgz#a59ada7c28010189355356b99738c9fcb7ade30e"
-  integrity sha512-J9RvCeAZXSTAibFY0kGw6Iy4EdyDNW7k6Q+liwX+bsck7QVsU78zz8vpBRweEfANxnnlG/xGGeOvf6r8UXzNJQ==
-  dependencies:
-    "@redux-saga/core" "^1.3.0"
-
 redux-thunk@^2.4.1:
   version "2.4.2"
   resolved "https://registry.npmmirror.com/redux-thunk/-/redux-thunk-2.4.2.tgz#b9d05d11994b99f7a91ea223e8b04cf0afa5ef3b"
   integrity sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==
 
-redux-thunk@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmmirror.com/redux-thunk/-/redux-thunk-3.1.0.tgz#94aa6e04977c30e14e892eae84978c1af6058ff3"
-  integrity sha512-NW2r5T6ksUKXCabzhL9z+h206HQw/NJkcLm1GPImRQ8IzfXwRGqjVhKJGauHirT0DAuyy6hjdnMZaRoAcy0Klw==
-
-redux@>=3, redux@^5.0.1:
+redux@>=3:
   version "5.0.1"
   resolved "https://registry.npmmirror.com/redux/-/redux-5.0.1.tgz#97fa26881ce5746500125585d5642c77b6e9447b"
   integrity sha512-M9/ELqF6fy8FwmkpnF0S3YKOqMyoWJ4+CS5Efg2ct3oY9daQvd/Pc71FpGZsVsbl3Cpb+IIcjBDUnnyBdQbq4w==
@@ -18381,11 +18354,6 @@ reselect@^4.1.5, reselect@^4.1.7:
   version "4.1.8"
   resolved "https://registry.npmmirror.com/reselect/-/reselect-4.1.8.tgz#3f5dc671ea168dccdeb3e141236f69f02eaec524"
   integrity sha512-ab9EmR80F/zQTMNeneUr4cv+jSwPJgIlvEmVwLerwrWVbpLlBuls9XHzIeTFy4cegU2NHBp3va0LKOzU5qFEYQ==
-
-reselect@^5.0.1:
-  version "5.1.0"
-  resolved "https://registry.npmmirror.com/reselect/-/reselect-5.1.0.tgz#c479139ab9dd91be4d9c764a7f3868210ef8cd21"
-  integrity sha512-aw7jcGLDpSgNDyWBQLv2cedml85qd95/iszJjN988zX1t7AVRJi19d9kto5+W7oCfQ94gyo40dVbT6g2k4/kXg==
 
 resize-observer-polyfill@^1.5.1:
   version "1.5.1"
