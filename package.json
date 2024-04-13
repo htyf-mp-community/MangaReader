@@ -1,6 +1,6 @@
 {
   "name": "mangareader",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "publishTime": "2024-03-31",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "dgz": "htyf-mp",
     "dgz:init": "htyf-mp --init",
     "build:dgz": "npm run run:scripts && htyf-mp --build",
-    "start": "react-native webpack-start -- --reset-cache",
+    "start": "htyf-mp --start",
     "android": "react-native run-android",
     "android-release": "react-native run-android --mode release",
     "build-android": "cd ./android && ./gradlew assembleRelease",
