@@ -1,8 +1,8 @@
 diff --git a/node_modules/@htyf-mp/engines/devPkg.json b/node_modules/@htyf-mp/engines/devPkg.json
-index 610c447..3a9470c 100644
+index 18047d7..25117ee 100644
 --- a/node_modules/@htyf-mp/engines/devPkg.json
 +++ b/node_modules/@htyf-mp/engines/devPkg.json
-@@ -104,7 +104,7 @@
+@@ -105,7 +105,7 @@
    "@react-navigation/native-stack": "6.9.26",
    "@react-navigation/stack": "6.3.29",
    "@realm/fetch": "0.1.1",
@@ -11,7 +11,7 @@ index 610c447..3a9470c 100644
    "@sayem314/react-native-keep-awake": "1.2.3",
    "@sentry/react-native": "5.20.0",
    "@shopify/flash-list": "1.6.4",
-@@ -157,7 +157,7 @@
+@@ -158,7 +158,7 @@
    "ffmpeg-kit-react-native": "6.0.2",
    "flubber": "0.4.2",
    "iconv-lite": "0.6.3",
@@ -20,7 +20,7 @@ index 610c447..3a9470c 100644
    "immutable": "4.3.5",
    "jcore-react-native": "2.1.6",
    "jpush-react-native": "3.0.6",
-@@ -264,7 +264,7 @@
+@@ -265,7 +265,7 @@
    "realm": "12.6.2",
    "redux-logger": "3.0.6",
    "redux-persist": "6.0.0",
