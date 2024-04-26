@@ -50,8 +50,8 @@
     "@hongtangyun/react-native-utils": "0.1.2",
     "@hongtangyun/rooms-sdk": "0.10.20",
     "@hromovp/react-native-static-server": "0.5.5",
-    "@htyf-mp/engines": "0.0.53",
-    "@htyf-mp/js-sdk": "0.0.10",
+    "@htyf-mp/engines": "^0.0.54",
+    "@htyf-mp/js-sdk": "^0.0.10",
     "@loadable/component": "5.15.2",
     "@miblanchard/react-native-slider": "2.6.0",
     "@native-base/icons": "0.0.11",
@@ -302,6 +302,7 @@
     "react-redux": "8.0.1",
     "react-refresh": "0.14.0",
     "react-test-renderer": "18.2.0",
+    "readable-stream": "4.5.2",
     "realm": "12.6.2",
     "redux-logger": "3.0.6",
     "redux-persist": "6.0.0",
@@ -327,8 +328,7 @@
     "webpack-bundle-analyzer": "4.10.2",
     "webpack-obfuscator": "3.5.1",
     "webpack-sources": "3.2.3",
-    "zustand": "4.5.2",
-    "readable-stream": "4.5.2"
+    "zustand": "4.5.2"
   },
   "devDependencies": {
     "@babel/core": "7.20.0",

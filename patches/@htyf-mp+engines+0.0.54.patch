@@ -1,5 +1,5 @@
 diff --git a/node_modules/@htyf-mp/engines/devPkg.json b/node_modules/@htyf-mp/engines/devPkg.json
-index 3aba4dc..696a353 100644
+index 0148535..807df86 100644
 --- a/node_modules/@htyf-mp/engines/devPkg.json
 +++ b/node_modules/@htyf-mp/engines/devPkg.json
 @@ -94,7 +94,7 @@
@@ -9,8 +9,8 @@ index 3aba4dc..696a353 100644
 -  "@reduxjs/toolkit": "2.2.3",
 +  "@reduxjs/toolkit": "1.8.1",
    "@shopify/flash-list": "1.6.4",
-   "@tarojs/components-rn": "3.6.27",
-   "@tarojs/router-rn": "3.6.27",
+   "@tarojs/components-rn": "3.6.28",
+   "@tarojs/router-rn": "3.6.28",
 @@ -137,7 +137,7 @@
    "expo-system-ui": "2.9.4",
    "expo-video-thumbnails": "7.9.0",
