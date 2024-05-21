@@ -517,7 +517,7 @@ const Chapter = ({ route, navigation }: StackChapterProps) => {
         <Fragment>
           <Box
             position="absolute"
-            top={0}
+            top={'40px'}
             left={0}
             right={0}
             safeAreaTop
@@ -659,7 +659,7 @@ const Chapter = ({ route, navigation }: StackChapterProps) => {
             position="absolute"
             left={0}
             right={0}
-            bottom={6}
+            bottom={0}
             flexDirection="row"
             alignItems="center"
             justifyContent="center"
