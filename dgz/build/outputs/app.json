@@ -2,7 +2,7 @@
   "type": "app",
   "name": "漫画基地",
   "appid": "caricature_996",
-  "version": "0.7.14",
+  "version": "0.7.15",
   "appUrlConfig": "https://raw.githubusercontent.com/htyf-mp-community/MangaReader/master/dgz/build/outputs/app.json",
   "zipUrl": "https://raw.githubusercontent.com/htyf-mp-community/MangaReader/master/dgz/build/outputs/dist.dgz"
 }
