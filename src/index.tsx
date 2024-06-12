@@ -11,6 +11,7 @@ process.env.PUBLISH_TIME = packageJson.publishTime;
 console.log(Dirs)
 
 CacheManager.config = {
+  blurRadius: 0,
   baseDir: `${Dirs?.CacheDir}/images_cache/`,
   cacheLimit: 0,
   sourceAnimationDuration: 500,

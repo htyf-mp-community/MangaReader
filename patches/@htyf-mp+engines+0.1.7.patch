@@ -1,5 +1,5 @@
 diff --git a/node_modules/@htyf-mp/engines/devPkg.json b/node_modules/@htyf-mp/engines/devPkg.json
-index acfd86a..0b7a9bd 100644
+index d8c2687..f134f13 100644
 --- a/node_modules/@htyf-mp/engines/devPkg.json
 +++ b/node_modules/@htyf-mp/engines/devPkg.json
 @@ -99,7 +99,7 @@
@@ -11,6 +11,15 @@ index acfd86a..0b7a9bd 100644
    "@shopify/flash-list": "1.6.4",
    "@tarojs/components-rn": "3.6.31",
    "@tarojs/router-rn": "3.6.31",
+@@ -144,7 +144,7 @@
+   "expo-system-ui": "3.0.6",
+   "expo-video-thumbnails": "8.0.0",
+   "expo-web-browser": "13.0.3",
+-  "immer": "10.1.1",
++  "immer": "9.0.21",
+   "lodash": "4.17.21",
+   "lottie-react-native": "6.7.2",
+   "md5": "2.3.0",
 @@ -214,7 +214,7 @@
    "react-redux": "9.1.2",
    "readable-stream": "4.5.2",

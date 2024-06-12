@@ -257,10 +257,13 @@ class HappyManga extends Base {
       id: Plugin.HAPPY,
       name: '嗨皮漫画',
       shortName: 'HAPPY',
-      description: '需要代理',
+      description: '需要代理，图片有 CF 校验',
       href: 'https://m.happymh.com/',
       userAgent,
-      defaultHeaders: { 'User-Agent': userAgent, Referer: 'https://m.happymh.com/' },
+      defaultHeaders: { 'User-Agent': userAgent, Referer: 'https://m.happymh.com/', Cookie: '' },
+      injectedJavaScript: `(function() {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ cookie: document.cookie }));
+      })();`,
       option: { discovery: discoveryOptions, search: [] },
     });
   }
@@ -273,6 +276,10 @@ class HappyManga extends Base {
     }
     return true;
   }
+
+  syncExtraData = (data: Record<string, any>) => {
+    this.defaultHeaders.Cookie = data.cookie || '';
+  };
 
   prepareDiscoveryFetch: Base['prepareDiscoveryFetch'] = (
     page,

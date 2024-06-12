@@ -1,1 +1,8 @@
-{"type":"app","name":"漫画基地","appid":"caricature_996__dev__","version":"0.7.15.1717981655859","appUrlConfig":"http://192.168.1.103:8000/app.json","zipUrl":"http://192.168.1.103:8000/dist.dgz"}
+{
+  "type": "app",
+  "name": "漫画基地",
+  "appid": "caricature_996",
+  "version": "0.7.16",
+  "appUrlConfig": "https://raw.githubusercontent.com/htyf-mp-community/MangaReader/master/dgz/build/outputs/app.json",
+  "zipUrl": "https://raw.githubusercontent.com/htyf-mp-community/MangaReader/master/dgz/build/outputs/dist.dgz"
+}
