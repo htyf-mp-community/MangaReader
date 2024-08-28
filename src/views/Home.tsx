@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, Fragment } from 'react';
+import React, { useMemo, useState, useCallback, Fragment, FC, useEffect } from 'react';
 import { action, useAppSelector, useAppDispatch } from '~/redux';
 import { nonNullable, AsyncStatus } from '~/utils';
 import { View, Text, HStack, Button, Modal, useDisclose, useToast } from 'native-base';
@@ -8,6 +8,7 @@ import Bookshelf from '~/components/Bookshelf';
 import Rotate from '~/components/Rotate';
 import * as RootNavigation from '~/utils/navigation';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import jssdk from '@htyf-mp/js-sdk';
 
 const { batchUpdate, removeFavorites } = action;
 
@@ -23,6 +24,13 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const headerRightOpacity = useSharedValue(0);
   const toast = useToast();
+
+  const [Ad, setAd] = useState<FC | undefined>(undefined);
+  useEffect(() => {
+    const _ad = jssdk.getAd();
+    // @ts-ignore
+    setAd(_ad);
+  }, []);
 
   const favoriteList = useMemo(
     () => list.map((item) => dict[item.mangaHash]).filter(nonNullable),
@@ -151,6 +159,7 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
         itemOnLongPress={handleSelect}
         loading={loadStatus === AsyncStatus.Pending}
       />
+
       <Modal useRNModal isOpen={isOpen} onClose={onClose} size="sm">
         <Modal.Content>
           <Modal.CloseButton />
@@ -170,6 +179,7 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      {Ad && <Ad />}
     </Fragment>
   );
 };
