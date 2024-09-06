@@ -1,5 +1,5 @@
 diff --git a/node_modules/@htyf-mp/engines/devPkg.json b/node_modules/@htyf-mp/engines/devPkg.json
-index 282b688..a2f6e37 100644
+index c3984a8..822e62a 100644
 --- a/node_modules/@htyf-mp/engines/devPkg.json
 +++ b/node_modules/@htyf-mp/engines/devPkg.json
 @@ -142,7 +142,7 @@
