@@ -18,6 +18,7 @@ import ErrorWithRetry from '~/components/ErrorWithRetry';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SpinLoading from '~/components/SpinLoading';
 import PathModal from '~/components/PathModal';
+import jssdk from '@htyf-mp/js-sdk';
 
 const { backup, restore, clearCache, loadLatestRelease, setAndroidDownloadPath } = action;
 const christmasGif = require('~/assets/christmas.gif');
@@ -91,7 +92,7 @@ const About = () => {
             {`${process.env.PUBLISH_TIME} ${process.env.VERSION}`}
           </Text>
         </VStack>
-
+        {jssdk.AdBanner && <jssdk.AdBanner />}
         {release.loadStatus === AsyncStatus.Pending && <SpinLoading />}
         {release.loadStatus === AsyncStatus.Rejected && (
           <ErrorWithRetry color="black" onRetry={handleRetry} />

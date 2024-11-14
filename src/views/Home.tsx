@@ -25,13 +25,6 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
   const headerRightOpacity = useSharedValue(0);
   const toast = useToast();
 
-  const [Ad, setAd] = useState<FC | undefined>(undefined);
-  useEffect(() => {
-    const _ad = jssdk.getAd();
-    // @ts-ignore
-    setAd(_ad);
-  }, []);
-
   const favoriteList = useMemo(
     () => list.map((item) => dict[item.mangaHash]).filter(nonNullable),
     [dict, list]
@@ -146,6 +139,7 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
 
   return (
     <Fragment>
+      {jssdk.AdBanner && <jssdk.AdBanner />}
       <Bookshelf
         emptyText="还没有收藏~ 可搜索查看更多漫画"
         list={favoriteList}
@@ -159,7 +153,6 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
         itemOnLongPress={handleSelect}
         loading={loadStatus === AsyncStatus.Pending}
       />
-
       <Modal useRNModal isOpen={isOpen} onClose={onClose} size="sm">
         <Modal.Content>
           <Modal.CloseButton />
@@ -179,7 +172,6 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
-      {Ad && <Ad />}
     </Fragment>
   );
 };

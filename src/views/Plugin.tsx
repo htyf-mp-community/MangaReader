@@ -9,6 +9,7 @@ import { useDebouncedSafeAreaInsets } from '~/hooks';
 import { Plugin as PluginType } from '~/plugins';
 import { TouchableOpacity } from 'react-native';
 import ScoreRate from '~/components/ScoreRate';
+import jssdk from '@htyf-mp/js-sdk';
 
 const { sortPlugin, disablePlugin } = action;
 
@@ -60,6 +61,7 @@ const Plugin = ({ navigation: { navigate } }: StackPluginProps) => {
 
   return (
     <Box position="relative">
+      {jssdk.AdBanner && <jssdk.AdBanner />}
       <DraggableFlatList
         data={list}
         renderItem={renderItem}

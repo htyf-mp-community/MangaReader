@@ -33,6 +33,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SpinLoading from '~/components/SpinLoading';
 import VectorIcon from '~/components/VectorIcon';
 import RedHeart from '~/components/RedHeart';
+import jssdk from '@htyf-mp/js-sdk';
 
 const {
   loadManga,
@@ -306,7 +307,7 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
           </Text>
         </Flex>
       </Flex>
-
+      {jssdk.AdBanner && <jssdk.AdBanner />}
       {chapters.length > 0 && render ? (
         <FlashList
           data={chapters}

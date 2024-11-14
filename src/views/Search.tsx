@@ -6,6 +6,7 @@ import { nonNullable, AsyncStatus } from '~/utils';
 import { PluginMap } from '~/plugins';
 import ActionsheetSelect from '~/components/ActionsheetSelect';
 import Bookshelf from '~/components/Bookshelf';
+import jssdk from '@htyf-mp/js-sdk';
 
 const { loadSearch, setSearchFilter } = action;
 
@@ -45,6 +46,7 @@ const Search = ({ route, navigation }: StackSearchProps) => {
   return (
     <Fragment>
       <SearchOption />
+      {jssdk.AdBanner && <jssdk.AdBanner />}
       <Bookshelf
         emptyText="没找到相关漫画~"
         list={searchList}

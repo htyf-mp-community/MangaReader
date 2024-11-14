@@ -9,6 +9,7 @@ import ActionsheetSelect from '~/components/ActionsheetSelect';
 import VectorIcon from '~/components/VectorIcon';
 import Bookshelf from '~/components/Bookshelf';
 import * as RootNavigation from '~/utils/navigation';
+import jssdk from '@htyf-mp/js-sdk';
 
 const { loadDiscovery, setSource, setDiscoveryFilter, resetSearchFilter } = action;
 
@@ -45,6 +46,7 @@ const Discovery = ({ navigation }: StackDiscoveryProps) => {
   return (
     <Fragment>
       <SearchOption />
+      {jssdk.AdBanner && <jssdk.AdBanner />}
       <Bookshelf
         emptyText="没找到相关漫画~"
         list={updateList}
@@ -159,9 +161,10 @@ export const PluginSelect = () => {
     <Fragment>
       <Button
         p={0}
+        px={3}
         mr={1}
-        w={12}
         h={12}
+        flexShrink={0}
         variant="ghost"
         _text={{ color: 'white', textAlign: 'center', fontSize: 'sm', fontWeight: 'bold' }}
         onPress={() => {
@@ -169,7 +172,7 @@ export const PluginSelect = () => {
           Keyboard.dismiss();
         }}
       >
-        {pluginLabel}
+        漫画源: {pluginLabel}
       </Button>
       <ActionsheetSelect
         isOpen={isOpen}
@@ -199,10 +202,11 @@ export const SearchAndPlugin = () => {
 
   return (
     <HStack space={1} flex={1} alignItems="center">
+      <PluginSelect />
       <Input
         pl={1}
         w={0}
-        flex={1}
+        flexGrow={2}
         size="xl"
         bg="purple.500"
         color="white"
@@ -211,7 +215,6 @@ export const SearchAndPlugin = () => {
         onChangeText={setKeyword}
         onSubmitEditing={handleSearch}
       />
-      <PluginSelect />
     </HStack>
   );
 };
