@@ -55,7 +55,7 @@ const Header = ({ navigation, options, route, enableShake = false }: HeaderProps
         </HStack>
 
         {Right}
-        <View style={{width: 85}} />
+        <View style={{ width: 85 }} />
       </HStack>
     </Fragment>
   );

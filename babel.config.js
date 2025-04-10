@@ -1,16 +1,49 @@
-module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
-  plugins: [
-    [
-      'module-resolver',
-      {
-        root: ['./'],
-        alias: {
-          '^~/(.+)': './src/\\1',
+/** 非必要禁止修改此块代码 */
+const dgz = require('./project.dgz.json')
+const pkg = require('./package.json')
+const path = require('path')
+
+module.exports = function (api) {
+  api.cache(true);
+  let type = 'htyf-mp';
+  let presets = ['module:metro-react-native-babel-preset'];
+  if (process.env.EXPO_PUBLIC_PROJECT_ROOT) {
+    presets = ['babel-preset-expo'];
+    type = 'expo';
+  }
+  console.log('run', type)
+  return {
+    presets: presets,
+    plugins: [
+      [
+        'transform-define',
+        {
+          /**
+           * appid
+           */
+          __APP_DEFINE_APPID__: `${dgz.appid}`,
+          /**
+           * app 版本号
+           */
+          __APP_DEFINE_VERSION__: `${pkg.version}`,
+          /**
+           * app 打包时间
+           */
+          __APP_DEFINE_BUILD_TIME__: `${new Date().getTime()}`,
         },
-        extensions: ['.ios.js', '.android.js', '.js', '.jsx', '.json', '.tsx', '.ts', '.native.js'],
-      },
+      ],
+      [
+        'module-resolver',
+        {
+          root: ['./'],
+          alias: {
+            'cheerio': path.join(__dirname, './node_modules/cheerio/dist/commonjs/cheerio.js'),
+            '^~/(.+)': './src/\\1',
+          },
+          extensions: ['.ios.js', '.android.js', '.js', '.jsx', '.json', '.tsx', '.ts', '.native.js'],
+        },
+      ],
+      'react-native-reanimated/plugin',
     ],
-    ['react-native-reanimated/plugin'],
-  ],
+  };
 };

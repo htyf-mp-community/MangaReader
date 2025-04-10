@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { Icon, IconButton, IIconButtonProps } from 'native-base';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -29,7 +30,7 @@ const VectorIcon = ({
     <IconButton
       p={2}
       opacity={props.disabled ? 0.5 : 1}
-      icon={<Icon shadow={shadow} as={sourceMap[source]} name={name} size={size} color={color} />}
+      icon={__DEV__ ? <Text>icon</Text> : <Icon shadow={shadow} as={sourceMap[source]} name={name} size={size} color={color} />}
       onPress={onPress}
       {...props}
     />

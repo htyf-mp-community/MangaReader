@@ -5,8 +5,11 @@ import { Dirs } from 'react-native-file-access';
 import App from './App';
 import * as packageJson from '../package.json';
 
+// @ts-ignore
 process.env.NAME = packageJson.name;
+// @ts-ignore
 process.env.VERSION = 'v' + packageJson.version;
+// @ts-ignore
 process.env.PUBLISH_TIME = packageJson.publishTime;
 console.log(Dirs)
 

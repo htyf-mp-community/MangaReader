@@ -1,37 +1,19 @@
-import '~/utils/define';
-import { CacheManager } from '@georstat/react-native-image-cache';
-import { AppRegistry } from 'react-native';
-import { Dirs } from 'react-native-file-access';
-import { name } from './app.json';
-import dayjs from 'dayjs';
-import App from '~/App';
-import * as packageJson from './package.json';
-import { MiniAppsEnginesProvider } from '@htyf-mp/engines'
+/** 禁止修改此块代码 */
+import * as SplashScreen from 'expo-splash-screen';
+import App from './src'
+import { useEffect } from 'react';
 
-require('dayjs/locale/zh-cn');
 
-// https://day.js.org/docs/en/plugin/advanced-format
-dayjs.extend(require('dayjs/plugin/advancedFormat'));
-// https://day.js.org/docs/zh-CN/plugin/custom-parse-format
-dayjs.extend(require('dayjs/plugin/customParseFormat'));
-// https://day.js.org/docs/zh-CN/i18n/changing-locale
-dayjs.locale('zh-cn');
+// keep the splash screen visible while complete fetching resources
+SplashScreen.preventAutoHideAsync();
 
-process.env.NAME = name;
-process.env.VERSION = 'v' + packageJson.version;
-process.env.PUBLISH_TIME = packageJson.publishTime;
+export default function Root() {
+  useEffect(() => {
+    SplashScreen.hideAsync();
+    return () => {
 
-CacheManager.config = {
-  baseDir: `${Dirs.CacheDir}/images_cache/`,
-  cacheLimit: 0,
-  sourceAnimationDuration: 500,
-  thumbnailAnimationDuration: 500,
-};
-
-const Root = () => {
-  return <MiniAppsEnginesProvider>
-    <App />
-  </MiniAppsEnginesProvider>
+    }
+  }, [])
+  return <App />;
 }
-
-AppRegistry.registerComponent(name, () => Root);
+/** 禁止修改此块代码 */

@@ -27,7 +27,7 @@ import {
   TaskType,
   TemplateKey,
 } from '~/utils';
-import { InteractionManager, PermissionsAndroid, Platform } from 'react-native';
+import { Alert, InteractionManager, PermissionsAndroid, Platform } from 'react-native';
 import { splitHash, combineHash, PluginMap } from '~/plugins';
 import { nanoid, Action, PayloadAction } from '@reduxjs/toolkit';
 import { action, initialState } from './slice';

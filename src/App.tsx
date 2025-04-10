@@ -9,7 +9,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
 import { useMessageToast } from '~/hooks';
 import { ErrorBoundary } from 'react-error-boundary';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 // import RNBootSplash from 'react-native-bootsplash';
 import ErrorFallback from '~/components/ErrorFallback';
@@ -48,6 +48,12 @@ const NavigationScreen = ({ ready = false }: NavigationScreenProps) => {
     }
   }, [ready, launchStatus]);
   useMessageToast();
+
+  useEffect(() => {
+    setTimeout(() => {
+      Alert.alert('1111');
+    }, 1000);
+  }, []);
 
   return (
     <ErrorBoundary fallbackRender={ErrorFallback}>
