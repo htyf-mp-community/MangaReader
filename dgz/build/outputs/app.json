@@ -1,1 +1,8 @@
-{"type":"app","name":"漫画基地","appid":"fe27d0d96e8fe86bce2eb341386c9f37__dev__","version":"0.0.24.1744287154040","appUrlConfig":"http://192.168.100.111:8000/app.json","zipUrl":"http://192.168.100.111:8000/dist.dgz"}
+{
+  "type": "app",
+  "name": "漫画基地",
+  "appid": "fe27d0d96e8fe86bce2eb341386c9f37",
+  "version": "0.7.24",
+  "appUrlConfig": "https://xxx.cos.ap-chengdu.myqcloud.com/assets/testMiniApps/htyanimation/app.json",
+  "zipUrl": "https://xxxxx.myqcloud.com/assets/testMiniApps/xxxxx/outputs/dist.dgz"
+}
