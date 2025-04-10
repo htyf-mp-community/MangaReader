@@ -1,8 +1,8 @@
 {
   "type": "app",
   "name": "漫画基地",
-  "appid": "fe27d0d96e8fe86bce2eb341386c9f37",
+  "appid": "caricature_996",
   "version": "0.7.24",
-  "appUrlConfig": "https://xxx.cos.ap-chengdu.myqcloud.com/assets/testMiniApps/htyanimation/app.json",
-  "zipUrl": "https://xxxxx.myqcloud.com/assets/testMiniApps/xxxxx/outputs/dist.dgz"
+  "appUrlConfig": "https://raw.githubusercontent.com/htyf-mp-community/MangaReader/master/dgz/build/outputs/app.json",
+  "zipUrl": "https://raw.githubusercontent.com/htyf-mp-community/MangaReader/master/dgz/build/outputs/dist.dgz"
 }
