@@ -49,12 +49,6 @@ const NavigationScreen = ({ ready = false }: NavigationScreenProps) => {
   }, [ready, launchStatus]);
   useMessageToast();
 
-  useEffect(() => {
-    setTimeout(() => {
-      Alert.alert('1111');
-    }, 1000);
-  }, []);
-
   return (
     <ErrorBoundary fallbackRender={ErrorFallback}>
       <Navigator
