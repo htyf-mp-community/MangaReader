@@ -37,7 +37,6 @@ module.exports = function (api) {
         {
           root: ['./'],
           alias: {
-            'cheerio': path.join(__dirname, './node_modules/cheerio/dist/commonjs/cheerio.js'),
             '^~/(.+)': './src/\\1',
           },
           extensions: ['.ios.js', '.android.js', '.js', '.jsx', '.json', '.tsx', '.ts', '.native.js'],
