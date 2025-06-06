@@ -68,6 +68,8 @@ interface ChapterInfoResponse
     };
   }> {}
 
+const HOST = 'https://www.mangacopy.com';
+
 const discoveryOptions = [
   {
     name: 'type',
@@ -156,7 +158,6 @@ const discoveryOptions = [
     ],
   },
 ];
-
 class CopyManga extends Base {
   readonly fetchHeaders = {
     ...this.defaultHeaders,
@@ -181,10 +182,10 @@ class CopyManga extends Base {
       name: '拷贝漫画',
       shortName: 'COPY',
       description: '',
-      href: 'https://mangacopy.com/',
+      href: `${HOST}/`,
       userAgent,
       defaultHeaders: {
-        Referer: 'https://mangacopy.com/',
+        Referer: `${HOST}/`,
         'User-Agent': userAgent,
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
@@ -256,7 +257,7 @@ class CopyManga extends Base {
       return {
         discovery: res.results.list.map((item) => {
           return {
-            href: `https://mangacopy.com/h5/details/comic/${item.path_word}`,
+            href: `${HOST}/h5/details/comic/${item.path_word}`,
             hash: Base.combineHash(this.id, item.path_word),
             source: this.id,
             sourceName: this.name,
@@ -279,7 +280,7 @@ class CopyManga extends Base {
       return {
         search: res.results.list.map((item) => {
           return {
-            href: `https://mangacopy.com/h5/details/comic/${item.path_word}`,
+            href: `${HOST}/h5/details/comic/${item.path_word}`,
             hash: Base.combineHash(this.id, item.path_word),
             source: this.id,
             sourceName: this.name,
@@ -309,7 +310,7 @@ class CopyManga extends Base {
 
       return {
         manga: {
-          href: `https://mangacopy.com/h5/details/comic/${path_word}`,
+          href: `${HOST}/h5/details/comic/${path_word}`,
           hash: Base.combineHash(this.id, path_word),
           source: this.id,
           sourceName: this.name,
@@ -346,7 +347,7 @@ class CopyManga extends Base {
             hash: Base.combineHash(this.id, build.path_word, item.id),
             mangaId: build.path_word,
             chapterId: item.id,
-            href: `https://mangacopy.com/h5/comicContent/${build.path_word}/${item.id}`,
+            href: `${HOST}/h5/comicContent/${build.path_word}/${item.id}`,
             title: item.name,
           }))
           .reverse(),

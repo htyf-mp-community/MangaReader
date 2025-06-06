@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-
+import { Alert } from 'react-native';
 export const fetchData = ({
   url,
   method = 'GET',
@@ -44,6 +44,7 @@ export const fetchData = ({
       fetch(url, init)
         .then((response) => {
           const contentType = response.headers.get('content-type') || '';
+          console.error('text 2', url, response.json());
           if (contentType.includes('application/json')) {
             return response.json();
           } else {
