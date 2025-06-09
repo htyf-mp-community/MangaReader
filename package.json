@@ -1,6 +1,6 @@
 {
   "name": "htyf-mp",
-  "version": "0.7.29",
+  "version": "0.7.30",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "prebuild": "npx expo prebuild --clean && npm run run:scripts",
@@ -462,7 +462,7 @@
     "@tarojs/taro-rn": "3.6.35",
     "ahooks": "3.8.5",
     "axios": "1.9.0",
-    "cheerio": "1.0.0",
+    "cheerio": "1.0.0-rc.12",
     "compare-versions": "6.1.1",
     "dayjs": "1.11.13",
     "delay": "6.0.0",

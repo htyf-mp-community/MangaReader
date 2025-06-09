@@ -68,8 +68,6 @@ interface ChapterInfoResponse
     };
   }> {}
 
-const HOST = 'https://www.mangacopy.com';
-
 const discoveryOptions = [
   {
     name: 'type',
@@ -158,13 +156,13 @@ const discoveryOptions = [
     ],
   },
 ];
+
 class CopyManga extends Base {
   readonly fetchHeaders = {
     ...this.defaultHeaders,
     webp: '1',
     region: '1',
-    platform: '1',
-    version: '2022.10.20',
+    version: '2.3.6',
     accept: 'application/json',
     'content-encoding': 'gzip, compress, br',
   };
@@ -175,17 +173,17 @@ class CopyManga extends Base {
 
   constructor() {
     const userAgent =
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1';
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36';
     super({
       score: 5,
       id: Plugin.COPY,
       name: '拷贝漫画',
       shortName: 'COPY',
       description: '',
-      href: `${HOST}/`,
+      href: 'https://mangacopy.com/',
       userAgent,
       defaultHeaders: {
-        Referer: `${HOST}/`,
+        Referer: 'https://mangacopy.com/',
         'User-Agent': userAgent,
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
@@ -220,7 +218,7 @@ class CopyManga extends Base {
         q_type: '',
         _update: 'true',
       },
-      headers: new Headers(this.fetchHeaders),
+      headers: new Headers({ ...this.fetchHeaders, platform: '2' }),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
@@ -235,20 +233,14 @@ class CopyManga extends Base {
   prepareChapterListFetch: Base['prepareChapterListFetch'] = (mangaId) => {
     return {
       url: `https://www.mangacopy.com/comicdetail/${mangaId}/chapters`,
-      headers: new Headers({
-        'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-      }),
+      headers: new Headers({ 'User-Agent': this.userAgent || '' }),
     };
   };
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, chapterId) => {
     return {
       url: `https://api.mangacopy.com/api/v3/comic/${mangaId}/chapter/${chapterId}`,
       body: { platform: 3 },
-      headers: new Headers({
-        'User-Agent':
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-      }),
+      headers: new Headers({ 'User-Agent': this.userAgent || '' }),
     };
   };
 
@@ -257,7 +249,7 @@ class CopyManga extends Base {
       return {
         discovery: res.results.list.map((item) => {
           return {
-            href: `${HOST}/h5/details/comic/${item.path_word}`,
+            href: `https://mangacopy.com/h5/details/comic/${item.path_word}`,
             hash: Base.combineHash(this.id, item.path_word),
             source: this.id,
             sourceName: this.name,
@@ -280,7 +272,7 @@ class CopyManga extends Base {
       return {
         search: res.results.list.map((item) => {
           return {
-            href: `${HOST}/h5/details/comic/${item.path_word}`,
+            href: `https://mangacopy.com/h5/details/comic/${item.path_word}`,
             hash: Base.combineHash(this.id, item.path_word),
             source: this.id,
             sourceName: this.name,
@@ -310,7 +302,7 @@ class CopyManga extends Base {
 
       return {
         manga: {
-          href: `${HOST}/h5/details/comic/${path_word}`,
+          href: `https://mangacopy.com/h5/details/comic/${path_word}`,
           hash: Base.combineHash(this.id, path_word),
           source: this.id,
           sourceName: this.name,
@@ -347,7 +339,7 @@ class CopyManga extends Base {
             hash: Base.combineHash(this.id, build.path_word, item.id),
             mangaId: build.path_word,
             chapterId: item.id,
-            href: `${HOST}/h5/comicContent/${build.path_word}/${item.id}`,
+            href: `https://mangacopy.com/h5/comicContent/${build.path_word}/${item.id}`,
             title: item.name,
           }))
           .reverse(),
