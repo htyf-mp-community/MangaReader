@@ -1,5 +1,5 @@
 import React from 'react';
-import { action, useAppDispatch } from '~/redux';
+import { action, useAppDispatch } from '@/redux';
 import { WebView } from 'react-native-webview';
 import jssdk from '@htyf-mp/js-sdk';
 

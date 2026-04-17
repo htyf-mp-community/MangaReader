@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import { Platform } from 'react-native';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';

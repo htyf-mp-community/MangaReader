@@ -1,5 +1,6 @@
 import queryString from 'query-string';
 import { Alert } from 'react-native';
+import axios from 'axios';
 export const fetchData = ({
   url,
   method = 'GET',
@@ -8,29 +9,39 @@ export const fetchData = ({
   timeout = 10000,
 }: FetchData) => {
   const controller = new AbortController();
-  const init: RequestInit & { headers: Headers } = {
+
+  // 将 Headers 对象转换为普通对象
+  const axiosHeaders: Record<string, string> = {};
+  headers.forEach((value, key) => {
+    axiosHeaders[key] = value;
+  });
+
+  // 构建 axios 配置
+  const axiosConfig: any = {
     method: method.toUpperCase(),
-    headers,
+    url,
+    headers: axiosHeaders,
+    timeout,
     signal: controller.signal,
-    redirect: 'follow',
-    credentials: 'include',
+    withCredentials: true,
+    maxRedirects: 5,
   };
 
-  if (Object.keys(body).length > 0) {
-    if (init.method === 'GET') {
-      url += '?' + queryString.stringify(body);
-    }
-    if (init.method === 'POST') {
+  // 处理请求体
+  if (Object.keys(body)?.length > 0) {
+    if (method.toUpperCase() === 'GET') {
+      axiosConfig.params = body;
+    } else if (method.toUpperCase() === 'POST') {
       if (body instanceof FormData) {
-        if (!init.headers.has('Content-Type')) {
-          init.headers.set('Content-Type', 'multipart/form-data');
+        axiosConfig.data = body;
+        if (!axiosHeaders['Content-Type']) {
+          axiosHeaders['Content-Type'] = 'multipart/form-data';
         }
-        init.body = body;
       } else {
-        if (!init.headers.has('Content-Type')) {
-          init.headers?.set('Content-Type', 'application/json');
+        axiosConfig.data = body;
+        if (!axiosHeaders['Content-Type']) {
+          axiosHeaders['Content-Type'] = 'application/json';
         }
-        init.body = JSON.stringify(body);
       }
     }
   }
@@ -41,20 +52,24 @@ export const fetchData = ({
 
   return new Promise<{ error: Error; data: undefined } | { error: undefined; data: any }>((res) => {
     try {
-      fetch(url, init)
+      axios(axiosConfig)
         .then((response) => {
-          const contentType = response.headers.get('content-type') || '';
-          console.error('text 2', url, response.json());
-          if (contentType.includes('application/json')) {
-            return response.json();
-          } else {
-            return response.text();
+          const contentType = response.headers['content-type'] || '';
+          let data = response.data;
+          
+          // axios 默认会根据 content-type 自动解析 JSON
+          // 如果不是 JSON，需要确保返回字符串格式
+          if (!contentType.includes('application/json')) {
+            // 如果 data 不是字符串，转换为字符串
+            if (typeof data !== 'string') {
+              data = String(data);
+            }
           }
-        })
-        .then((data) => {
+          
           res({ error: undefined, data });
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error('error', error);
           res({ error: new Error('网络错误，请稍后重试'), data: undefined });
         })
         .finally(() => {

@@ -3,7 +3,7 @@ import { AppStateStatus, Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { VolumeManager } from 'react-native-volume-manager';
 import { useAppState } from './useAppState';
-import { Volume } from '~/utils';
+import { Volume } from '@/utils';
 
 export const useVolumeUpDown = (callback: (type: Volume) => void, enable = true) => {
   const volumeRef = useRef<number>();

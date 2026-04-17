@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Center } from 'native-base';
 
-const readingGif = require('~/assets/reading.gif');
+const readingGif = require('@/assets/reading.gif');
 
 const Loading = () => {
   return (

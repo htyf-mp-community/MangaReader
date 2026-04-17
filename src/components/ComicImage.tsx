@@ -1,16 +1,16 @@
 import React, { useCallback, useState, useMemo, useRef, memo } from 'react';
-import { aspectFit, AsyncStatus, LayoutMode, Orientation, ScrambleType, unscramble } from '~/utils';
+import { aspectFit, AsyncStatus, LayoutMode, Orientation, ScrambleType, unscramble } from '@/utils';
 import { Image as ReactNativeImage, StyleSheet, Dimensions, DimensionValue } from 'react-native';
-import { useDebouncedSafeAreaFrame, useDebouncedSafeAreaInsets } from '~/hooks';
+import { useDebouncedSafeAreaFrame, useDebouncedSafeAreaInsets } from '@/hooks';
 import { CachedImage, CacheManager } from '@georstat/react-native-image-cache';
 import { useFocusEffect } from '@react-navigation/native';
 import { Center, Image } from 'native-base';
-import ErrorWithRetry from '~/components/ErrorWithRetry';
-import FastImage, { ResizeMode } from 'react-native-fast-image';
+import ErrorWithRetry from '@/components/ErrorWithRetry';
+import FastImage, { ResizeMode } from '@d11/react-native-fast-image';
 import Canvas, { Image as CanvasImage } from 'react-native-canvas';
 import { FileSystem } from 'react-native-file-access';
 
-const groundPoundGif = require('~/assets/ground_pound.gif');
+const groundPoundGif = require('@/assets/ground_pound.gif');
 const windowScale = Dimensions.get('window').scale;
 const maxPixelSize = 4096 * 4096;
 const resizeModeDict: Record<LayoutMode, ResizeMode> = {

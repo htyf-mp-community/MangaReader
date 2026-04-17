@@ -1,4 +1,4 @@
-import { action, useAppSelector, useAppDispatch } from '~/redux';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { Toast } from 'native-base';
@@ -11,7 +11,7 @@ export const useMessageToast = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (message.length > 0) {
+      if (message?.length > 0) {
         message.forEach((text) => {
           setTimeout(() => {
             Toast.show({ title: text, duration: 5000, placement: 'bottom' });

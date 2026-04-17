@@ -1,3 +1,29 @@
+/**
+ * Redux Saga 定义文件
+ * 
+ * 功能说明：
+ * 1. 处理所有异步操作（数据获取、文件操作、任务管理等）
+ * 2. 使用 Redux Saga 管理副作用（side effects）
+ * 3. 提供统一的错误处理和重试机制
+ * 
+ * 主要 Saga：
+ * - initSaga: 应用初始化
+ * - launchSaga: 启动流程
+ * - syncDataSaga: 数据同步
+ * - backupSaga/restoreSaga: 备份和恢复
+ * - saveDataSaga: 数据持久化
+ * - batchUpdateSaga: 批量更新漫画
+ * - loadDiscoverySaga/loadSearchSaga: 发现页和搜索
+ * - loadMangaSaga/loadChapterSaga: 加载漫画和章节
+ * - downloadAndExportChapterSaga: 下载和导出
+ * - taskManagerSaga: 任务管理
+ * - catchErrorSaga: 全局错误处理
+ * 
+ * 工具函数：
+ * - takeEverySuspense/takeLatestSuspense/takeLeadingSuspense: 带错误处理的 saga 监听器
+ * - tryCatchWorker: 错误处理包装器
+ */
+
 import {
   all,
   put,
@@ -26,26 +52,42 @@ import {
   AsyncStatus,
   TaskType,
   TemplateKey,
-} from '~/utils';
+  serializeError,
+} from '@/utils';
 import { Alert, InteractionManager, PermissionsAndroid, Platform } from 'react-native';
-import { splitHash, combineHash, PluginMap } from '~/plugins';
+import { splitHash, combineHash, PluginMap } from '@/plugins';
 import { nanoid, Action, PayloadAction } from '@reduxjs/toolkit';
 import { action, initialState } from './slice';
 import { Dirs, FileSystem } from 'react-native-file-access';
 import { CacheManager } from '@georstat/react-native-image-cache';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
-import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DocumentPickerResponse, pick } from '@react-native-documents/picker';
+import { createMMKV } from 'react-native-mmkv';
 import base64 from 'base-64';
 import dayjs from 'dayjs';
 import Share from 'react-native-share';
 
-import rootSchema from '~/schema/root.json';
-import dictSchema from '~/schema/dict.json';
-import taskSchema from '~/schema/task.json';
-import pluginSchema from '~/schema/plugin.json';
-import settingSchema from '~/schema/setting.json';
-import favoritesSchema from '~/schema/favorites.json';
+// ==================== MMKV 存储配置 ====================
+
+/**
+ * MMKV 存储实例
+ * MMKV 是高性能的键值存储库，比 AsyncStorage 快得多
+ * 
+ * 配置说明：
+ * - id: 存储实例的唯一标识
+ * - encryptionKey: 加密密钥，用于数据加密存储（可选）
+ */
+const storage = createMMKV({
+  id: 'manga-reader-storage',
+  encryptionKey: 'manga-reader-encryption-key',
+});
+
+import rootSchema from '@/schema/root.json';
+import dictSchema from '@/schema/dict.json';
+import taskSchema from '@/schema/task.json';
+import pluginSchema from '@/schema/plugin.json';
+import settingSchema from '@/schema/setting.json';
+import favoritesSchema from '@/schema/favorites.json';
 
 const {
   // app
@@ -128,20 +170,44 @@ const {
   syncDict,
 } = action;
 
+/**
+ * 初始化 Saga
+ * 应用启动时触发启动流程
+ */
 function* initSaga() {
   yield put(launch());
 }
+
+/**
+ * 启动流程 Saga
+ * 
+ * 执行顺序：
+ * 1. 同步本地数据
+ * 2. 重启任务队列
+ * 3. 加载最新版本信息
+ * 4. 完成启动
+ */
 function* launchSaga() {
   yield takeLatestSuspense(launch.type, function* () {
+    // 同步本地存储的数据
     yield put(syncData());
     yield take(syncDataCompletion.type);
+    
+    // 重启任务队列（恢复未完成的任务）
     yield put(restartTask());
+    
+    // 加载最新版本信息（可选）
     yield put(loadLatestRelease());
 
+    // 完成启动
     yield put(launchCompletion({ error: undefined }));
   });
 }
 
+/**
+ * 插件数据同步 Saga
+ * 当插件额外数据更新时，调用插件的同步方法
+ */
 function* pluginSyncDataSaga() {
   yield takeLatestSuspense(
     setExtra.type,
@@ -154,6 +220,7 @@ function* pluginSyncDataSaga() {
         return;
       }
 
+      // 调用插件的同步方法（可能返回提示消息）
       const message = plugin.syncExtraData(extra);
       if (typeof message === 'string') {
         yield put(toastMessage(message));
@@ -162,35 +229,42 @@ function* pluginSyncDataSaga() {
   );
 }
 
+/**
+ * 数据同步 Saga
+ * 
+ * 功能说明：
+ * 1. 从 MMKV 读取所有持久化的数据
+ * 2. 支持新旧两种数据格式（兼容性处理）
+ * 3. 验证数据格式
+ * 4. 同步到 Redux store
+ * 
+ * 数据迁移：
+ * - 旧格式：使用索引 + 字典的方式存储
+ * - 新格式：直接存储字典数据
+ */
 function* syncDataSaga() {
   yield takeLatestSuspense(syncData.type, function* () {
     try {
-      const [
-        [, mangaIndexData],
-        [, chapterIndexData],
-        [, taskIndexData],
-        [, jobIndexData],
-        [, favoritesData],
-        [, pluginData],
-        [, settingData],
-        [, dictData],
-      ]: KeyValuePair[] = yield call(AsyncStorage.multiGet, [
-        storageKey.mangaIndex,
-        storageKey.chapterIndex,
-        storageKey.taskIndex,
-        storageKey.jobIndex,
-        storageKey.favorites,
-        storageKey.plugin,
-        storageKey.setting,
-        storageKey.dict,
-      ]);
+      // 批量读取所有存储的数据（MMKV 是同步的，不需要 yield call）
+      const mangaIndexData = storage.getString(storageKey.mangaIndex) || undefined;
+      const chapterIndexData = storage.getString(storageKey.chapterIndex) || undefined;
+      const taskIndexData = storage.getString(storageKey.taskIndex) || undefined;
+      const jobIndexData = storage.getString(storageKey.jobIndex) || undefined;
+      const favoritesData = storage.getString(storageKey.favorites) || undefined;
+      const pluginData = storage.getString(storageKey.plugin) || undefined;
+      const settingData = storage.getString(storageKey.setting) || undefined;
+      const dictData = storage.getString(storageKey.dict) || undefined;
       const task: RootState['task'] = { list: [], job: { max: 5, list: [], thread: [] } };
 
       if (!dictData) {
         const dict: RootState['dict'] = { manga: {}, chapter: {}, lastWatch: {}, record: {} };
         if (mangaIndexData) {
           const mangaIndex: string[] = JSON.parse(mangaIndexData);
-          const mangaPairs: KeyValuePair[] = yield call(AsyncStorage.multiGet, mangaIndex);
+          // MMKV 同步读取，转换为 KeyValuePair 格式
+          const mangaPairs: KeyValuePair[] = mangaIndex.map((key) => [
+            key,
+            storage.getString(key) || '',
+          ]);
           const mangaDict = pairsToDict(mangaPairs);
           for (const key in mangaDict) {
             dict.manga[key] = mangaDict[key].manga;
@@ -199,7 +273,11 @@ function* syncDataSaga() {
         }
         if (chapterIndexData) {
           const chapterIndex: string[] = JSON.parse(chapterIndexData);
-          const chapterPairs: KeyValuePair[] = yield call(AsyncStorage.multiGet, chapterIndex);
+          // MMKV 同步读取，转换为 KeyValuePair 格式
+          const chapterPairs: KeyValuePair[] = chapterIndex.map((key) => [
+            key,
+            storage.getString(key) || '',
+          ]);
           const chapterDict = pairsToDict(chapterPairs);
           for (const key in chapterDict) {
             dict.chapter[key] = chapterDict[key].chapter;
@@ -219,18 +297,27 @@ function* syncDataSaga() {
         } else {
           yield put(toastMessage('同步字典数据失败：格式错误'));
         }
-        yield call(AsyncStorage.removeItem, storageKey.dict);
+        // MMKV 同步删除
+        storage.remove(storageKey.dict);
       }
 
       if (taskIndexData) {
         const taskIndex: string[] = JSON.parse(taskIndexData);
-        const taskPairs: KeyValuePair[] = yield call(AsyncStorage.multiGet, taskIndex);
+        // MMKV 同步读取，转换为 KeyValuePair 格式
+        const taskPairs: KeyValuePair[] = taskIndex.map((key) => [
+          key,
+          storage.getString(key) || '',
+        ]);
         const taskDict = pairsToDict(taskPairs);
         task.list = taskIndex.map((item) => taskDict[item]);
       }
       if (jobIndexData) {
         const jobIndex: string[] = JSON.parse(jobIndexData);
-        const jobPairs: KeyValuePair[] = yield call(AsyncStorage.multiGet, jobIndex);
+        // MMKV 同步读取，转换为 KeyValuePair 格式
+        const jobPairs: KeyValuePair[] = jobIndex.map((key) => [
+          key,
+          storage.getString(key) || '',
+        ]);
         const jobDict = pairsToDict(jobPairs);
         task.job.list = jobIndex.map((item) => jobDict[item]);
       }
@@ -288,9 +375,7 @@ function* syncDataSaga() {
     } catch (error) {
       yield put(
         syncDataCompletion({
-          error: new Error(
-            `同步本地数据失败：${error instanceof Error ? error.message : ErrorMessage.Unknown}`
-          ),
+          error: `同步本地数据失败：${error instanceof Error ? error.message : ErrorMessage.Unknown}`,
         })
       );
     }
@@ -324,9 +409,7 @@ function* backupSaga() {
     } catch (error) {
       yield put(
         backupCompletion({
-          error: new Error(
-            '备份失败: ' + (error instanceof Error ? error.message : ErrorMessage.Unknown)
-          ),
+          error: '备份失败: ' + (error instanceof Error ? error.message : ErrorMessage.Unknown),
         })
       );
     }
@@ -335,7 +418,7 @@ function* backupSaga() {
 function* restoreSaga() {
   yield takeLatestSuspense(restore.type, function* () {
     try {
-      const res: DocumentPickerResponse = yield call(DocumentPicker.pickSingle);
+      const res: DocumentPickerResponse = yield call(pick);
       const source: string = yield call(FileSystem.readFile, res.uri, 'base64');
       const data = JSON.parse(
         decodeURIComponent(base64.decode(source.replace('datatext/plainbase64', '')))
@@ -355,15 +438,26 @@ function* restoreSaga() {
     } catch (error) {
       yield put(
         restoreCompletion({
-          error: new Error(
-            '恢复失败: ' + (error instanceof Error ? error.message : ErrorMessage.Unknown)
-          ),
+          error: '恢复失败: ' + (error instanceof Error ? error.message : ErrorMessage.Unknown),
         })
       );
     }
   });
 }
 
+/**
+ * 保存数据到本地存储
+ * 
+ * 功能说明：
+ * 1. 收集需要持久化的数据
+ * 2. 构建索引和字典结构
+ * 3. 批量写入 MMKV
+ * 4. 清理无用数据
+ * 
+ * 优化说明：
+ * - 使用 InteractionManager.runAfterInteractions 延迟执行
+ * - 避免阻塞 UI 渲染
+ */
 function* saveData() {
   const favorites = ((state: RootState) => state.favorites)(yield select());
   const dict = ((state: RootState) => state.dict)(yield select());
@@ -424,20 +518,39 @@ function* saveData() {
     const curr = keyValuePairs.map((item) => item[0]);
 
     return new Promise((res, rej) => {
-      AsyncStorage.getAllKeys()
-        .then((prev) => {
-          const useless = prev.filter((key) => !curr.includes(key));
-          Promise.all([AsyncStorage.multiSet(keyValuePairs), AsyncStorage.multiRemove(useless)])
-            .then(res)
-            .catch(rej);
-        })
-        .catch(rej);
+      try {
+        // MMKV 同步操作
+        const prev = storage.getAllKeys();
+        const useless = prev.filter((key) => !curr.includes(key));
+        
+        // 批量写入数据
+        keyValuePairs.forEach(([key, value]) => {
+          storage.set(key, value);
+        });
+        
+        // 删除无用数据
+        useless.forEach((key) => {
+          storage.remove(key);
+        });
+        
+        res(undefined);
+      } catch (error) {
+        rej(error);
+      }
     });
   };
 
   // 9MB 大小的备份数据可以优化 100ms 性能，大概 6fps
   yield call(InteractionManager.runAfterInteractions, { name: 'saveData', gen: fn });
 }
+/**
+ * 保存数据 Worker（防抖处理）
+ * 
+ * 功能说明：
+ * - 合并多次保存请求，避免频繁写入
+ * - 使用计数器记录待处理的请求数
+ * - 延迟 1 秒执行，确保数据稳定后再保存
+ */
 const saveDataWorker = (function () {
   let count = 0;
   let isPending = false;
@@ -451,11 +564,16 @@ const saveDataWorker = (function () {
     while (count > 0) {
       count = 0;
       yield call(saveData);
-      yield delay(1000);
+      yield delay(1000); // 延迟 1 秒，防抖处理
     }
     isPending = false;
   };
 })();
+
+/**
+ * 保存数据 Saga
+ * 监听多个 action，在数据变化时自动保存
+ */
 function* saveDataSaga() {
   yield takeEverySuspense(
     [
@@ -492,7 +610,8 @@ function* saveDataSaga() {
 }
 function* clearCacheSaga() {
   yield takeLatestSuspense(clearCache.type, function* () {
-    yield call(AsyncStorage.clear);
+    // MMKV 同步清空所有数据
+    storage.clearAll();
     yield put(syncData());
     yield take(syncDataCompletion.type);
     yield put(clearCacheCompletion({}));
@@ -510,17 +629,36 @@ function* loadLatestReleaseSaga() {
   // });
 }
 
+/**
+ * 批量更新 Saga
+ * 
+ * 功能说明：
+ * 1. 批量检查收藏的漫画是否有更新
+ * 2. 支持重试机制（最多 3 次）
+ * 3. 支持错误延迟重试（根据错误信息中的秒数）
+ * 4. 标记有更新的漫画（isTrend）
+ * 
+ * 队列管理：
+ * - stack: 正在处理的漫画
+ * - queue: 待处理的漫画
+ * - success: 成功更新的漫画
+ * - fail: 失败的漫画
+ */
 function* batchUpdateSaga() {
   yield takeLeadingSuspense(
     batchUpdate.type,
     function* ({ payload: defaultList }: ReturnType<typeof batchUpdate>) {
       const favorites = ((state: RootState) => state.favorites)(yield select());
       const fail = ((state: RootState) => state.batch.fail)(yield select());
+      
+      // 确定要更新的列表：优先使用传入列表，其次失败列表，最后启用批量更新的收藏
       const batchList =
         defaultList ||
-        (fail.length > 0
+        (fail?.length > 0
           ? fail
           : favorites.filter((item) => item.enableBatch).map((item) => item.mangaHash));
+      
+      // 构建队列，每个项目包含哈希和重试次数
       const queue = [...batchList].map((hash) => ({ hash, retry: 0 }));
 
       const loadMangaEffect = function* ({ hash = '', retry = 0 }) {
@@ -560,7 +698,7 @@ function* batchUpdateSaga() {
           yield put(
             outStack({
               isSuccess: true,
-              isTrend: nonNullable(prev) && nonNullable(curr) && curr.length > prev.length,
+              isTrend: nonNullable(prev) && nonNullable(curr) && curr?.length > prev?.length,
               hash,
               isRetry: false,
             })
@@ -591,11 +729,11 @@ function* loadDiscoverySaga() {
       const { page, isEnd, filter } = ((state: RootState) => state.discovery)(yield select());
 
       if (!plugin) {
-        yield put(loadDiscoveryCompletion({ error: new Error(ErrorMessage.PluginMissing) }));
+        yield put(loadDiscoveryCompletion({ error: ErrorMessage.PluginMissing }));
         return;
       }
       if (isEnd) {
-        yield put(loadDiscoveryCompletion({ error: new Error(ErrorMessage.NoMore) }));
+        yield put(loadDiscoveryCompletion({ error: ErrorMessage.NoMore }));
         return;
       }
 
@@ -606,7 +744,6 @@ function* loadDiscoverySaga() {
         },
         { ...filter }
       );
-
       const { error: fetchError, data } = yield call(
         fetchData,
         plugin.prepareDiscoveryFetch(page, filterWithDefault)
@@ -616,7 +753,12 @@ function* loadDiscoverySaga() {
         '漫画数据解析错误：'
       );
 
-      yield put(loadDiscoveryCompletion({ error: fetchError || pluginError, data: discovery }));
+      const error = serializeError(fetchError || pluginError);
+      if (error) {
+        yield put(loadDiscoveryCompletion({ error }));
+      } else {
+        yield put(loadDiscoveryCompletion({ data: discovery || [] }));
+      }
     }
   );
 }
@@ -629,11 +771,11 @@ function* loadSearchSaga() {
       const { page, isEnd, filter } = ((state: RootState) => state.search)(yield select());
 
       if (!plugin) {
-        yield put(loadSearchCompletion({ error: new Error(ErrorMessage.PluginMissing) }));
+        yield put(loadSearchCompletion({ error: ErrorMessage.PluginMissing }));
         return;
       }
       if (isEnd) {
-        yield put(loadSearchCompletion({ error: new Error(ErrorMessage.NoMore) }));
+        yield put(loadSearchCompletion({ error: ErrorMessage.NoMore }));
         return;
       }
 
@@ -654,7 +796,12 @@ function* loadSearchSaga() {
         '漫画数据解析错误：'
       );
 
-      yield put(loadSearchCompletion({ error: fetchError || pluginError, data: search }));
+      const error = serializeError(fetchError || pluginError);
+      if (error) {
+        yield put(loadSearchCompletion({ error }));
+      } else {
+        yield put(loadSearchCompletion({ data: search || [] }));
+      }
     }
   );
 }
@@ -688,16 +835,16 @@ function* loadMangaSaga() {
         );
 
         if (loadMangaInfoError) {
-          yield put(loadMangaCompletion({ error: loadMangaInfoError, actionId }));
+          yield put(loadMangaCompletion({ error: serializeError(loadMangaInfoError), actionId }));
           return;
         }
         if (loadChapterListError) {
-          yield put(loadMangaCompletion({ error: loadChapterListError, actionId }));
+          yield put(loadMangaCompletion({ error: serializeError(loadChapterListError), actionId }));
           return;
         }
         if (!nonNullable(mangaInfo) || !nonNullable(chapterInfo)) {
           yield put(
-            loadMangaCompletion({ error: new Error(ErrorMessage.WrongDataType), actionId })
+            loadMangaCompletion({ error: ErrorMessage.WrongDataType, actionId })
           );
           return;
         }
@@ -730,7 +877,7 @@ function* loadMangaInfoSaga() {
 
       if (!plugin) {
         yield put(
-          loadMangaInfoCompletion({ error: new Error(ErrorMessage.PluginMissing), actionId })
+          loadMangaInfoCompletion({ error: ErrorMessage.PluginMissing, actionId })
         );
         return;
       }
@@ -745,7 +892,7 @@ function* loadMangaInfoSaga() {
       );
 
       yield put(
-        loadMangaInfoCompletion({ error: fetchError || pluginError, data: manga, actionId })
+        loadMangaInfoCompletion({ error: serializeError(fetchError || pluginError), data: manga, actionId })
       );
     }
   );
@@ -759,7 +906,7 @@ function* loadChapterListSaga() {
       const plugin = PluginMap.get(source);
 
       if (!plugin) {
-        yield put(loadChapterListCompletion({ error: new Error(ErrorMessage.PluginMissing) }));
+        yield put(loadChapterListCompletion({ error: ErrorMessage.PluginMissing }));
         return;
       }
 
@@ -779,7 +926,7 @@ function* loadChapterListSaga() {
       if (pluginError || fetchError) {
         yield put(
           loadChapterListCompletion({
-            error: pluginError || fetchError,
+            error: serializeError(pluginError || fetchError),
             data: { mangaHash, page, list: [] },
           })
         );
@@ -825,7 +972,7 @@ function* loadChapterSaga() {
       const plugin = PluginMap.get(source);
 
       if (!plugin) {
-        yield put(loadChapterCompletion({ error: new Error(ErrorMessage.PluginMissing) }));
+        yield put(loadChapterCompletion({ error: ErrorMessage.PluginMissing }));
         return;
       }
 
@@ -868,15 +1015,15 @@ function* loadChapterSaga() {
       }
 
       if (error) {
-        yield put(loadChapterCompletion({ error }));
+        yield put(loadChapterCompletion({ error: serializeError(error) }));
         return;
       }
       if (!chapter) {
-        yield put(loadChapterCompletion({ error: new Error(ErrorMessage.MissingChapterInfo) }));
+        yield put(loadChapterCompletion({ error: ErrorMessage.MissingChapterInfo }));
         return;
       }
 
-      yield put(loadChapterCompletion({ error, data: chapter }));
+      yield put(loadChapterCompletion({ error: serializeError(error), data: chapter }));
     }
   );
 }
@@ -905,10 +1052,10 @@ function* replaceDownloadPath(
       [TemplateKey.MANGA_NAME]: mangaTitle,
       [TemplateKey.CHAPTER_ID]: chapterId,
       [TemplateKey.CHAPTER_NAME]: chapterTitle,
-      [TemplateKey.AUTHOR]: author.length > 0 ? author : ['未知'],
+      [TemplateKey.AUTHOR]: author?.length > 0 ? author : ['未知'],
       [TemplateKey.SOURCE_ID]: source,
       [TemplateKey.SOURCE_NAME]: sourceName,
-      [TemplateKey.TAG]: tag.length > 0 ? tag : ['未知'],
+      [TemplateKey.TAG]: tag?.length > 0 ? tag : ['未知'],
       [TemplateKey.STATUS]: statusToLabel(status),
       [TemplateKey.HASH]: options?.hash || nanoid(5),
       [TemplateKey.TIME]: options?.timestamp || dayjs().valueOf(),
@@ -1065,7 +1212,7 @@ function* pushChapterTask({
     yield select()
   );
   if (!nonNullable(chapter)) {
-    yield put(pushTask({ error: new Error(ErrorMessage.PushTaskFail), actionId }));
+    yield put(pushTask({ error: ErrorMessage.PushTaskFail, actionId }));
     return;
   }
 
@@ -1163,7 +1310,7 @@ function* taskManagerSaga() {
       const queue = ((state: RootState) =>
         state.task.job.list.filter((item) => item.status === AsyncStatus.Default))(yield select());
 
-      if (queue.length <= 0) {
+      if (queue?.length <= 0) {
         break;
       }
 
@@ -1187,31 +1334,59 @@ function* catchErrorSaga() {
       !haveError(payload) ||
       loadMangaInfoCompletion.type === type ||
       loadChapterListCompletion.type === type ||
-      payload.error.message === ErrorMessage.NoMore
+      payload.error === ErrorMessage.NoMore
     ) {
       return;
     }
 
     const error = payload.error;
-    if (error.message === 'Aborted') {
+    if (error === 'Aborted') {
       yield put(toastMessage(ErrorMessage.RequestTimeout));
     } else {
-      yield put(toastMessage(error.message));
+      yield put(toastMessage(error));
     }
   });
 }
 
+// ==================== Saga 工具函数 ====================
+
+/**
+ * 带错误处理的 takeEvery
+ * 自动捕获 worker 中的错误并显示提示
+ */
 function* takeEverySuspense(pattern: string | string[], worker: (...args: any[]) => any) {
   yield takeEvery(pattern, tryCatchWorker(worker));
 }
+
+/**
+ * 带错误处理的 takeLatest
+ * 自动捕获 worker 中的错误并显示提示
+ * 只执行最新的 action，取消之前的执行
+ */
 function* takeLatestSuspense(pattern: string | string[], worker: (...args: any[]) => any) {
   yield takeLatest(pattern, tryCatchWorker(worker));
 }
+
+/**
+ * 带错误处理的 takeLeading
+ * 自动捕获 worker 中的错误并显示提示
+ * 只执行第一个 action，忽略后续的相同 action
+ */
 function* takeLeadingSuspense(pattern: string | string[], worker: (...args: any[]) => any) {
   yield takeLeading(pattern, tryCatchWorker(worker));
 }
+
+/**
+ * 错误处理包装器
+ * 
+ * 功能说明：
+ * - 包装 saga worker 函数
+ * - 自动捕获错误并显示提示消息
+ * - 防止错误导致整个 saga 崩溃
+ * 
+ * 参考：https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
+ */
 function tryCatchWorker(fn: (...args: any[]) => any): (...args: any[]) => any {
-  // https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
   return function* (this: any) {
     try {
       yield fn.apply(this, Array.from(arguments));
@@ -1225,20 +1400,38 @@ function tryCatchWorker(fn: (...args: any[]) => any): (...args: any[]) => any {
   };
 }
 
+/**
+ * 根 Saga
+ * 
+ * 功能说明：
+ * - 使用 all effect 并行启动所有 saga
+ * - all effect 类似于 Promise.all
+ * - 如果某个 fork effect 抛出错误，整个 all effect 会关闭
+ * - 因此需要 catchErrorSaga 捕获所有错误，保持 saga 运行
+ * 
+ * Saga 分类：
+ * 1. 初始化：initSaga, launchSaga
+ * 2. 数据管理：syncDataSaga, backupSaga, restoreSaga, saveDataSaga, clearCacheSaga
+ * 3. 内容加载：loadDiscoverySaga, loadSearchSaga, loadMangaSaga, loadChapterSaga
+ * 4. 任务管理：batchUpdateSaga, taskManagerSaga, downloadAndExportChapterSaga
+ * 5. 工具：pluginSyncDataSaga, saveImageSaga, loadLatestReleaseSaga
+ * 6. 错误处理：catchErrorSaga
+ */
 export default function* rootSaga() {
-  // all effect look like promise.all
-  // if fork effect throw any error, all effect with shut down
-  // so catch any error to keep saga running
   yield all([
+    // 初始化
     fork(initSaga),
-
     fork(launchSaga),
+    
+    // 数据管理
     fork(pluginSyncDataSaga),
     fork(syncDataSaga),
     fork(backupSaga),
     fork(restoreSaga),
     fork(saveDataSaga),
     fork(clearCacheSaga),
+    
+    // 内容加载
     fork(loadLatestReleaseSaga),
     fork(batchUpdateSaga),
     fork(loadDiscoverySaga),
@@ -1247,10 +1440,13 @@ export default function* rootSaga() {
     fork(loadMangaInfoSaga),
     fork(loadChapterListSaga),
     fork(loadChapterSaga),
+    
+    // 任务管理
     fork(saveImageSaga),
     fork(downloadAndExportChapterSaga),
     fork(taskManagerSaga),
 
+    // 错误处理（必须放在最后，捕获所有错误）
     fork(catchErrorSaga),
   ]);
 }

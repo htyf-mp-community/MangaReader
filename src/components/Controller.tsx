@@ -5,8 +5,8 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import { useDebouncedSafeAreaInsets, useDebouncedSafeAreaFrame } from '~/hooks';
-import { emptyFn, PositionX, SafeArea } from '~/utils';
+import { useDebouncedSafeAreaInsets, useDebouncedSafeAreaFrame } from '@/hooks';
+import { emptyFn, PositionX, SafeArea } from '@/utils';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -115,8 +115,8 @@ const Controller = ({
       }
     });
   const doubleTap = Gesture.Tap()
-    .maxDuration(300)
-    .maxDelay(300)
+    .maxDuration(200)
+    .maxDelay(200)
     .numberOfTaps(2)
     .onStart((e) => {
       'worklet';

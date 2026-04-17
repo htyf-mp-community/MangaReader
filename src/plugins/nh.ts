@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import { Platform } from 'react-native';
 import dayjs from 'dayjs';
 import * as cheerio from 'cheerio';
@@ -103,7 +103,7 @@ class NHentai extends Base {
     const isMangaInfo =
       ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) =>
         PATTERN_SCRIPT.test(item.children[0].data || '')
-      ).length > 0;
+      )?.length > 0;
 
     if (isMangaInfo) {
       const cover = $('div#content div#cover img.lazyload').attr('data-src') || '';
@@ -145,7 +145,7 @@ class NHentai extends Base {
         bookCover: cover,
         title: data.title.japanese,
         status: MangaStatus.End,
-        latest: chapters.length > 0 ? chapters[0].title : '',
+        latest: chapters?.length > 0 ? chapters[0].title : '',
         updateTime: dayjs.unix(data.upload_date).format('YYYY-MM-DD'),
         author: [...artist, ...group],
         tag: tags,
@@ -231,7 +231,7 @@ class NHentai extends Base {
     manga.hash = Base.combineHash(this.id, mangaId);
     manga.title = data.title.japanese || data.title.english || data.title.pretty;
     manga.infoCover = cover;
-    manga.latest = chapters.length > 0 ? chapters[0].title : '';
+    manga.latest = chapters?.length > 0 ? chapters[0].title : '';
     manga.updateTime = dayjs.unix(data.upload_date).format('YYYY-MM-DD');
     manga.author = [...artist, ...group];
     manga.tag = tags;

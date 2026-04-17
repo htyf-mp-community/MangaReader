@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import queryString from 'query-string';
 import LZString from 'lz-string';
 import * as cheerio from 'cheerio';
@@ -155,10 +155,10 @@ class ManHuaGui extends Base {
         const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
 
         let status = MangaStatus.Unknown;
-        if ($$('span.sl').toArray().length > 0) {
+        if ($$('span.sl').toArray()?.length > 0) {
           status = MangaStatus.Serial;
         }
-        if ($$('span.fd').toArray().length > 0) {
+        if ($$('span.fd').toArray()?.length > 0) {
           status = MangaStatus.End;
         }
 
@@ -212,10 +212,10 @@ class ManHuaGui extends Base {
         ).map((item) => item.attribs.title);
 
         let status = MangaStatus.Unknown;
-        if ($$('div.book-cover span.sl').toArray().length > 0) {
+        if ($$('div.book-cover span.sl').toArray()?.length > 0) {
           status = MangaStatus.Serial;
         }
-        if ($$('div.book-cover span.fd').toArray().length > 0) {
+        if ($$('div.book-cover span.fd').toArray()?.length > 0) {
           status = MangaStatus.End;
         }
 
@@ -261,7 +261,7 @@ class ManHuaGui extends Base {
     const chapters: ChapterItem[] = [];
 
     const scriptContent =
-      ($('script:not([src])').get($('script:not([src])').length - 2) as cheerio.TagElement)
+      ($('script:not([src])').get($('script:not([src])')?.length - 2) as cheerio.TagElement)
         .children[0].data || '';
     const [, mangaId, title] = scriptContent.match(PATTERN_MANGA_INFO) || [];
     const latest = $('div.chapter-bar a.blue').first().text();
@@ -279,7 +279,7 @@ class ManHuaGui extends Base {
     ).map((a) => a.attribs.title);
     const cover = 'https:' + $('p.hcover img').first().attr('src');
 
-    const isAudit = $('#erroraudit_show').length > 0;
+    const isAudit = $('#erroraudit_show')?.length > 0;
 
     if (isAudit) {
       const encodeHtml = $('#__VIEWSTATE').first().attr('value') || '';
@@ -344,10 +344,10 @@ class ManHuaGui extends Base {
         });
     }
 
-    if ($('p.hcover span.serial').toArray().length > 0) {
+    if ($('p.hcover span.serial').toArray()?.length > 0) {
       manga.status = MangaStatus.Serial;
     }
-    if ($('p.hcover span.finish').toArray().length > 0) {
+    if ($('p.hcover span.finish').toArray()?.length > 0) {
       manga.status = MangaStatus.End;
     }
 
@@ -375,7 +375,7 @@ class ManHuaGui extends Base {
       (script) => PATTERN_SCRIPT.test(script.children[0].data || '')
     );
 
-    if (scriptAfterFilter.length <= 0) {
+    if (scriptAfterFilter?.length <= 0) {
       throw new Error(ErrorMessage.MissingChapterInfo);
     }
     const script = scriptAfterFilter[0].children[0].data || '';

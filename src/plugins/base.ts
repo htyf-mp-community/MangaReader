@@ -1,4 +1,4 @@
-import { clearAllCookie, ErrorMessage } from '~/utils';
+import { clearAllCookie, ErrorMessage } from '@/utils';
 
 interface InitialData {
   id: Plugin;

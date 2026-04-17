@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import * as cheerio from 'cheerio';
 
 interface ChapterItem {
@@ -359,7 +359,7 @@ class KL extends Base {
   handleChapter: Base['handleChapter'] = (text: string | null, mangaId, chapterId) => {
     const $ = cheerio.load(text || '');
 
-    if ($('meta').toArray().length > 0) {
+    if ($('meta').toArray()?.length > 0) {
       const cid = $('input#chapter').val();
       const [, , name = '', title = ''] = (
         $('div.chapter-content-top li span[itemprop=name]').toArray() as cheerio.TagElement[]

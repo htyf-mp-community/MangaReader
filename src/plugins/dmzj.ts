@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import dayjs from 'dayjs';
 import * as cheerio from 'cheerio';
 
@@ -292,7 +292,7 @@ class DongManZhiJia extends Base {
 
     const chapterScriptContent =
       ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) => {
-        if (item.children.length <= 0) {
+        if (item.children?.length <= 0) {
           return false;
         }
 
@@ -324,7 +324,7 @@ class DongManZhiJia extends Base {
 
     const infoScriptContent =
       ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) => {
-        if (item.children.length <= 0) {
+        if (item.children?.length <= 0) {
           return false;
         }
 
@@ -347,7 +347,7 @@ class DongManZhiJia extends Base {
     const fullTime =
       (
         text4.children.filter(
-          (item) => item.type === 'tag' && item.name === 'span' && item.children.length > 0
+          (item) => item.type === 'tag' && item.name === 'span' && item.children?.length > 0
         )[0] as cheerio.TagElement
       ).children[0].data || '';
     const [updateTime = ''] = fullTime.match(PATTERN_FULL_TIME) || [];

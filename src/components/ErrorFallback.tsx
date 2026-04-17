@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, VStack, Image, Text } from 'native-base';
 import { FallbackProps } from 'react-error-boundary';
 
-const thisIsTrueGif = require('~/assets/this_is_true.gif');
+const thisIsTrueGif = require('@/assets/this_is_true.gif');
 
 const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   return (

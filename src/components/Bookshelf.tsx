@@ -1,15 +1,15 @@
 import React, { memo, useMemo } from 'react';
-import { useDelayRender, useSplitWidth } from '~/hooks';
+import { useDelayRender, useSplitWidth } from '@/hooks';
 import { Box, Text, Icon, HStack, Pressable } from 'native-base';
 import { Keyboard, StyleSheet } from 'react-native';
-import { coverAspectRatio } from '~/utils';
+import { coverAspectRatio } from '@/utils';
 import { CachedImage } from '@georstat/react-native-image-cache';
 import { FlashList } from '@shopify/flash-list';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import WhiteCurtain from '~/components/WhiteCurtain';
-import SpinLoading from '~/components/SpinLoading';
-import Loading from '~/components/Loading';
-import Empty from '~/components/Empty';
+import WhiteCurtain from '@/components/WhiteCurtain';
+import SpinLoading from '@/components/SpinLoading';
+import Loading from '@/components/Loading';
+import Empty from '@/components/Empty';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface BookshelfProps {
@@ -48,7 +48,7 @@ const Bookshelf = ({
     minNumColumns: 3,
     maxSplitWidth: 180,
   });
-  const render = useDelayRender(loading && list.length === 0);
+  const render = useDelayRender(loading && list?.length === 0);
   const extraData = useMemo(
     () => ({
       width: itemWidth,
@@ -76,10 +76,10 @@ const Bookshelf = ({
     };
   };
 
-  if ((loading && list.length === 0) || !render) {
+  if ((loading && list?.length === 0) || !render) {
     return <Loading />;
   }
-  if (!loading && list.length === 0) {
+  if (!loading && list?.length === 0) {
     return <Empty text={emptyText} onPress={reload} />;
   }
 

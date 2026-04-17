@@ -1,4 +1,4 @@
-import { Plugin } from '~/plugins';
+import { Plugin } from '@/plugins';
 
 declare global {
   type PartialOption<T, K extends string | number | symbol> = Omit<T, K> & {

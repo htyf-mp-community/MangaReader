@@ -18,21 +18,21 @@ import {
   ChapterOptions,
   MangaStatus,
   AsyncStatus,
-} from '~/utils';
-import { useOnce, useDelayRender, useSplitWidth, useDebouncedSafeAreaInsets } from '~/hooks';
-import { action, useAppSelector, useAppDispatch } from '~/redux';
+} from '@/utils';
+import { useOnce, useDelayRender, useSplitWidth, useDebouncedSafeAreaInsets } from '@/hooks';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { StyleSheet, RefreshControl, Linking } from 'react-native';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, useNavigationState } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { CachedImage } from '@georstat/react-native-image-cache';
-import ActionsheetSelect, { ActionsheetSelectProps } from '~/components/ActionsheetSelect';
-import Drawer, { DrawerRef } from '~/components/Drawer';
+import ActionsheetSelect, { ActionsheetSelectProps } from '@/components/ActionsheetSelect';
+import Drawer, { DrawerRef } from '@/components/Drawer';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SpinLoading from '~/components/SpinLoading';
-import VectorIcon from '~/components/VectorIcon';
-import RedHeart from '~/components/RedHeart';
+import SpinLoading from '@/components/SpinLoading';
+import VectorIcon from '@/components/VectorIcon';
+import RedHeart from '@/components/RedHeart';
 import jssdk from '@htyf-mp/js-sdk';
 
 const {
@@ -112,7 +112,7 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
   }, [data, sequence]);
 
   useOnce(() => {
-    if (!nonNullable(data) || (nonNullable(data) && data.chapters.length <= 0)) {
+    if (!nonNullable(data) || (nonNullable(data) && data.chapters?.length <= 0)) {
       dispatch(loadManga({ mangaHash }));
     }
   });
@@ -277,10 +277,10 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
             {data.author.map((text, index) => (
               <Fragment key={text}>
                 <Text onPress={() => handleSearch(text)}>{text}</Text>
-                {index < data.author.length - 1 && <Text>、</Text>}
+                {index < data.author?.length - 1 && <Text>、</Text>}
               </Fragment>
             ))}
-            {data.author.length <= 0 && '未知'}
+            {data.author?.length <= 0 && '未知'}
           </Text>
           <Box flexGrow={1} />
           <Text color="white" fontSize={14} fontWeight="bold" numberOfLines={1}>
@@ -291,10 +291,10 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
             {data.tag.map((text, index) => (
               <Fragment key={text}>
                 <Text onPress={() => handleSearch(text)}>{text}</Text>
-                {index < data.tag.length - 1 && <Text>、</Text>}
+                {index < data.tag?.length - 1 && <Text>、</Text>}
               </Fragment>
             ))}
-            {data.tag.length <= 0 && '未知'}
+            {data.tag?.length <= 0 && '未知'}
           </Text>
           <Text color="white" fontSize={14} fontWeight="bold" numberOfLines={1}>
             来源：{data.sourceName}
@@ -308,7 +308,7 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
         </Flex>
       </Flex>
       {jssdk.AdBanner && <jssdk.AdBanner />}
-      {chapters.length > 0 && render ? (
+      {chapters?.length > 0 && render ? (
         <FlashList
           data={chapters}
           extraData={extraData}
@@ -362,9 +362,32 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
   );
 };
 
-export const HeartAndBrowser = () => {
-  const route = useRoute<StackDetailProps['route']>();
-  const navigation = useNavigation<StackDetailProps['navigation']>();
+export const HeartAndBrowser = ({ route: routeProp, navigation: navigationProp }: { route?: StackDetailProps['route']; navigation?: StackDetailProps['navigation']; canGoBack?: boolean } = {}) => {
+  // 使用 useNavigationState 安全获取路由信息（作为回退）
+  const routeFromState = useNavigationState((state) => {
+    if (!state || !state.routes || state.index === undefined) return null;
+    const currentRoute = state.routes[state.index];
+    if (currentRoute && currentRoute.name === 'Detail') {
+      return {
+        name: currentRoute.name,
+        params: currentRoute.params || {},
+        key: currentRoute.key,
+      } as StackDetailProps['route'];
+    }
+    return null;
+  });
+  
+  // 优先使用从 Header 传递的 route 和 navigation
+  // 如果没有传递 routeProp，使用 useNavigationState 获取的路由
+  // 注意：如果 routeProp 存在，navigationProp 也应该存在（因为 Header 会传递两者）
+  const route = routeProp || routeFromState;
+  const navigation = navigationProp || null;
+  
+  if (!route || !navigation) {
+    // 如果无法获取路由或导航对象，返回空组件
+    return null;
+  }
+  
   const { mangaHash, enabledMultiple = false, selected = [] } = route.params;
   const dispatch = useAppDispatch();
   const sequence = useAppSelector((state) => state.setting.sequence);
@@ -383,16 +406,16 @@ export const HeartAndBrowser = () => {
     if (manga) {
       navigation.setParams({
         selected:
-          selected.length < manga.chapters.length ? manga.chapters.map((item) => item.hash) : [],
+          selected?.length < manga.chapters?.length ? manga.chapters.map((item) => item.hash) : [],
       });
     }
   };
   const handleDownload = () => {
-    selected.length > 0 && dispatch(downloadChapter(selected));
+    selected?.length > 0 && dispatch(downloadChapter(selected));
     handleClose();
   };
   const handleExport = () => {
-    selected.length > 0 && dispatch(exportChapter(selected));
+    selected?.length > 0 && dispatch(exportChapter(selected));
     handleClose();
   };
 
@@ -429,9 +452,9 @@ export const HeartAndBrowser = () => {
           <VectorIcon
             source="materialCommunityIcons"
             name={
-              selected.length <= 0
+              selected?.length <= 0
                 ? 'checkbox-blank-outline'
-                : selected.length >= manga.chapters.length
+                : selected?.length >= manga.chapters?.length
                 ? 'checkbox-marked-outline'
                 : 'checkbox-intermediate'
             }
@@ -497,7 +520,7 @@ export const PrehandleDrawer = () => {
   };
 
   const renderItem = ({ item, index }: ListRenderItemInfo<Task>) => {
-    const progress = (item.success.length + item.fail.length) / item.queue.length;
+    const progress = (item.success?.length + item.fail?.length) / item.queue?.length;
     return (
       <HStack
         h="12"
@@ -532,7 +555,7 @@ export const PrehandleDrawer = () => {
             onLongPress={() => handleRemove(item.taskId)}
           >
             <Text fontWeight="bold" fontSize="sm" color="red.800">
-              {item.fail.length}
+              {item.fail?.length}
             </Text>
           </Pressable>
         )}
@@ -547,7 +570,7 @@ export const PrehandleDrawer = () => {
   return (
     <Drawer ref={drawerRef}>
       <Box bg="gray.100" h="full">
-        {list.length > 0 && (
+        {list?.length > 0 && (
           <FlashList
             data={list}
             renderItem={renderItem}

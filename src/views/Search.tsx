@@ -1,11 +1,11 @@
 import React, { useMemo, useState, useEffect, useCallback, Fragment } from 'react';
-import { action, useAppSelector, useAppDispatch } from '~/redux';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { useRoute, useFocusEffect, RouteProp } from '@react-navigation/native';
 import { Button, HStack, useDisclose } from 'native-base';
-import { nonNullable, AsyncStatus } from '~/utils';
-import { PluginMap } from '~/plugins';
-import ActionsheetSelect from '~/components/ActionsheetSelect';
-import Bookshelf from '~/components/Bookshelf';
+import { nonNullable, AsyncStatus } from '@/utils';
+import { PluginMap } from '@/plugins';
+import ActionsheetSelect from '@/components/ActionsheetSelect';
+import Bookshelf from '@/components/Bookshelf';
 import jssdk from '@htyf-mp/js-sdk';
 
 const { loadSearch, setSearchFilter } = action;
@@ -93,7 +93,7 @@ export const SearchOption = () => {
     dispatch(loadSearch({ keyword, source, isReset: true }));
   };
 
-  if (searchOptions.length <= 0) {
+  if (searchOptions?.length <= 0) {
     return null;
   }
 

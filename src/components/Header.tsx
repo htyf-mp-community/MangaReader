@@ -2,8 +2,10 @@ import React, { Fragment, useMemo } from 'react';
 import { StatusBar, HStack, Text, useTheme, View } from 'native-base';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { getHeaderTitle } from '@react-navigation/elements';
-import VectorIcon from '~/components/VectorIcon';
-import Shake from '~/components/Shake';
+import VectorIcon from '@/components/VectorIcon';
+import Shake from '@/components/Shake';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import jssdk from '@htyf-mp/js-sdk';
 
 interface HeaderProps extends NativeStackHeaderProps {
   enableShake?: boolean;
@@ -11,6 +13,7 @@ interface HeaderProps extends NativeStackHeaderProps {
 
 const Header = ({ navigation, options, route, enableShake = false }: HeaderProps) => {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const title = getHeaderTitle(options, route.name);
   const canGoBack = useMemo(() => navigation.canGoBack(), [navigation]);
 
@@ -22,9 +25,16 @@ const Header = ({ navigation, options, route, enableShake = false }: HeaderProps
   };
 
   const { headerLeft, headerRight } = options;
-  const Left = headerLeft ? headerLeft({ canGoBack }) : null;
-  const Right = headerRight ? headerRight({ canGoBack }) : null;
-
+  const Left = headerLeft ? (headerLeft as any)({ canGoBack, route, navigation }) : null;
+  const Right = headerRight ? (headerRight as any)({ canGoBack, route, navigation }) : null;
+  const headerStyle = useMemo(() => {
+    const menuButton = jssdk.getMenuButtonBoundingClientRect();
+    return {
+      paddingTop: menuButton.top,
+      paddingRight: menuButton.right + menuButton.width,
+      height: menuButton.height || 80,
+    }
+  }, [insets]);
   return (
     <Fragment>
       <StatusBar animated backgroundColor={colors.purple[500]} barStyle="light-content" />
@@ -55,7 +65,7 @@ const Header = ({ navigation, options, route, enableShake = false }: HeaderProps
         </HStack>
 
         {Right}
-        <View style={{ width: 85 }} />
+        <View style={{ width: headerStyle.paddingRight }} />
       </HStack>
     </Fragment>
   );

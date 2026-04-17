@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import LZString from 'lz-string';
 import * as cheerio from 'cheerio';
 
@@ -255,7 +255,7 @@ class ManHuaMao extends Base {
     manga.hash = Base.combineHash(this.id, mangaId);
     manga.title = title;
     manga.infoCover = cover;
-    manga.latest = chapters.length > 0 ? chapters[0].title : '';
+    manga.latest = chapters?.length > 0 ? chapters[0].title : '';
     manga.updateTime = updateTime;
     manga.author = author;
     manga.tag = tags;

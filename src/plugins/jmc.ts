@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage, ScrambleType } from '~/utils';
+import { MangaStatus, ErrorMessage, ScrambleType } from '@/utils';
 import { Platform } from 'react-native';
 import * as cheerio from 'cheerio';
 
@@ -267,11 +267,11 @@ class CopyManga extends Base {
       status = MangaStatus.Serial;
     } else if (tag.includes('完結')) {
       status = MangaStatus.End;
-    } else if (chapters.length <= 0) {
+    } else if (chapters?.length <= 0) {
       status = MangaStatus.End;
     }
 
-    if (chapters.length <= 0) {
+    if (chapters?.length <= 0) {
       chapters.push({
         hash: Base.combineHash(this.id, mangaId, firstChapterId),
         mangaId,

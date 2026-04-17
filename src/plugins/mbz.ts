@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import dayjs from 'dayjs';
 import * as cheerio from 'cheerio';
 
@@ -318,10 +318,10 @@ class MangaBZ extends Base {
 
     // eslint-disable-next-line no-eval
     const images: string[] = eval(text || '');
-    const [, last] = images[images.length - 1].match(PATTERN_IMAGE_INDEX) || [];
+    const [, last] = images[images?.length - 1].match(PATTERN_IMAGE_INDEX) || [];
 
     return {
-      canLoadMore: images.length >= 2,
+      canLoadMore: images?.length >= 2,
       chapter: {
         hash: Base.combineHash(this.id, mangaId, chapterId),
         mangaId,

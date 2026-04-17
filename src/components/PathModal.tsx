@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, Modal, Input, InputGroup } from 'native-base';
-import { initialState } from '~/redux/slice';
-import VectorIcon from '~/components/VectorIcon';
+import { initialState } from '@/redux/slice';
+import VectorIcon from '@/components/VectorIcon';
 
 interface PathModalProps {
   isOpen?: boolean;

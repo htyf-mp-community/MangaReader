@@ -1,5 +1,5 @@
 import { FileSystem, Dirs } from 'react-native-file-access';
-import { ImageState } from '~/components/ComicImage';
+import { ImageState } from '@/components/ComicImage';
 
 type CacheMap = Record<string, Omit<ImageState, 'dataUrl' | 'loadStatus'>>;
 

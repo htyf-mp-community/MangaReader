@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
-import { Orientation } from '~/utils';
+import { Orientation } from '@/utils';
 
 export const useDebouncedSafeAreaFrame = () => {
   const _frame = useSafeAreaFrame();

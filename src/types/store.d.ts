@@ -10,8 +10,8 @@ import {
   Timer,
   Animated,
   TaskType,
-} from '~/utils';
-import { Plugin } from '~/plugins';
+} from '@/utils';
+import { Plugin } from '@/plugins';
 
 declare global {
   interface Manga {

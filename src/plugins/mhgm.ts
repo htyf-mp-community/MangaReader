@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
 import queryString from 'query-string';
 import LZString from 'lz-string';
 import * as cheerio from 'cheerio';
@@ -15,10 +15,10 @@ const hostnames = [
 ];
 
 const randomHostname = (n = hostnames) => {
-  for (var i = [n[0].w], r, t = 1; t < n.length; t++) {
+  for (var i = [n[0].w], r, t = 1; t < n?.length; t++) {
     i[t] = n[t].w + i[t - 1];
   }
-  for (r = Math.random() * i[i.length - 1], t = 0; t < i.length; t++) {
+  for (r = Math.random() * i[i?.length - 1], t = 0; t < i?.length; t++) {
     if (i[t] > r) {
       break;
     }
@@ -304,7 +304,7 @@ class ManHuaGuiMobile extends Base {
     const [, author] = authorLabel.match(PATTERN_AUTHOR) || [];
     const [updateTime = ''] = updateTimeLabel.match(PATTERN_FULL_TIME) || [];
 
-    const isAudit = $('#erroraudit_show').length > 0;
+    const isAudit = $('#erroraudit_show')?.length > 0;
 
     if (isAudit) {
       const encodeHtml = $('#__VIEWSTATE').first().attr('value') || '';
@@ -376,7 +376,7 @@ class ManHuaGuiMobile extends Base {
       (item) => PATTERN_SCRIPT.test(item.children[0].data || '')
     );
 
-    if (scriptAfterFilter.length <= 0) {
+    if (scriptAfterFilter?.length <= 0) {
       throw new Error(ErrorMessage.MissingChapterInfo);
     }
     const script = scriptAfterFilter[0].children[0].data || '';

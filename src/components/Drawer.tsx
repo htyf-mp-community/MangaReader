@@ -14,7 +14,7 @@ import Animated, {
   withDelay,
   Easing,
 } from 'react-native-reanimated';
-import { useDebouncedSafeAreaFrame, useDebouncedSafeAreaInsets } from '~/hooks';
+import { useDebouncedSafeAreaFrame, useDebouncedSafeAreaInsets } from '@/hooks';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 export interface DrawerRef {

@@ -1,10 +1,10 @@
 import { ErrorMessage, MangaStatus, ScrambleType } from './enum';
 import { Draft, Draft07, JsonError, JsonSchema } from 'json-schema-library';
 import { delay, race, Effect } from 'redux-saga/effects';
-import { ImageState } from '~/components/ComicImage';
+import { ImageState } from '@/components/ComicImage';
 import { Platform } from 'react-native';
 import { Buffer } from 'buffer';
-import CookieManager from '@react-native-cookies/cookies';
+import CookieManager from 'react-native-nitro-cookies';
 import queryString from 'query-string';
 import CryptoJS from 'crypto-js';
 import base64 from 'base-64';
@@ -71,8 +71,8 @@ export function* raceTimeout(fn: Effect, ms: number = 5000) {
   return { result };
 }
 
-export function haveError(payload: any): payload is { error: Error } {
-  return payload && payload.error instanceof Error;
+export function haveError(payload: any): payload is { error: string } {
+  return payload && typeof payload.error === 'string';
 }
 
 export function validate<T = any>(
@@ -83,7 +83,7 @@ export function validate<T = any>(
   const jsonSchema: Draft = new Draft07(schema);
   const errors: JsonError[] = jsonSchema.validate(data);
 
-  if (nonNullable(initData) && errors.length > 0) {
+  if (nonNullable(initData) && errors?.length > 0) {
     errors.forEach((error) => {
       if (error.code !== 'required-property-error') {
         return;
@@ -102,7 +102,7 @@ export function validate<T = any>(
     return validate(data, schema);
   }
 
-  if (errors.length > 0) {
+  if (errors?.length > 0) {
     return false;
   }
   return true;
@@ -172,7 +172,7 @@ export function mergeQuery(uri: string, key: string, value: string) {
 
 export function AESDecrypt(contentKey: string): string {
   const a = contentKey.substring(0x0, 0x10);
-  const b = contentKey.substring(0x10, contentKey.length);
+  const b = contentKey.substring(0x10, contentKey?.length);
 
   const c = CryptoJS.enc.Utf8.parse('xxxmanga.woo.key');
   const d = CryptoJS.enc.Utf8.parse(a);
@@ -193,6 +193,15 @@ export function nonNullable<T>(v: T | null | undefined): v is T {
   return v !== null && v !== undefined;
 }
 
+/**
+ * 将 Error 对象转换为可序列化的字符串
+ * 用于 Redux action payload，因为 Redux 要求所有值都必须是可序列化的
+ */
+export function serializeError(error: Error | undefined | null): string | undefined {
+  if (!error) return undefined;
+  return error instanceof Error ? error.message : String(error);
+}
+
 export function trycatch<T extends (...args: any) => any>(fn: T, prefix?: string): ReturnType<T> {
   try {
     return fn();
@@ -208,7 +217,7 @@ export function trycatch<T extends (...args: any) => any>(fn: T, prefix?: string
 }
 
 export function ellipsis(str: string, len: number = 20, suffix = '...') {
-  return str.length > len ? str.substring(0, len) + suffix : str;
+  return str?.length > len ? str.substring(0, len) + suffix : str;
 }
 
 export function clearAllCookie(url: string) {
@@ -273,7 +282,7 @@ function getSplitNum(id: number, index: string) {
   var a = 10;
   if (id >= 268850) {
     const str = md5(id + index);
-    const nub = str.substring(str.length - 1).charCodeAt(0) % (id >= 421926 ? 8 : 10);
+    const nub = str.substring(str?.length - 1).charCodeAt(0) % (id >= 421926 ? 8 : 10);
 
     switch (nub) {
       case 0:
@@ -345,10 +354,10 @@ export function unscrambleJMC(uri: string, width: number, height: number) {
 export function unscrambleRM5(uri: string, width: number, height: number) {
   const step = [];
   const list = uri.split('/');
-  const id = list[list.length - 1].replace('.jpg', '');
+  const id = list[list?.length - 1].replace('.jpg', '');
 
   const buffer = Buffer.from(CryptoJS.MD5(base64.decode(id)).toString(), 'hex');
-  const nub = buffer[buffer.length - 1];
+  const nub = buffer[buffer?.length - 1];
   const numSplit = (nub % 10) + 5;
   const perheight = height % numSplit;
 
@@ -418,8 +427,8 @@ export function getDefaultFillAverageHeight(
   );
 
   return {
-    portrait: height.portraitHeight / list.length,
-    landscape: height.landscapeHeight / list.length,
+    portrait: height.portraitHeight / list?.length,
+    landscape: height.landscapeHeight / list?.length,
   };
 }
 
@@ -427,14 +436,14 @@ export function getDefaultFillMedianHeight(
   list: ImageState[],
   defaultHeight: { landscape: number; portrait: number }
 ) {
-  if (list.length <= 0) {
+  if (list?.length <= 0) {
     return {
       portrait: defaultHeight.portrait,
       landscape: defaultHeight.landscape,
     };
   }
 
-  const mid = Math.min(Math.max(Math.floor(list.length / 2), 0), list.length);
+  const mid = Math.min(Math.max(Math.floor(list?.length / 2), 0), list?.length);
   return {
     portrait: list[mid]?.portraitHeight || defaultHeight.portrait,
     landscape: list[mid]?.landscapeHeight || defaultHeight.landscape,

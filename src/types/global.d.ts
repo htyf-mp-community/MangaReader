@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { customTheme } from '~/utils';
+import { customTheme } from '@/utils';
 // choose @types/cheerio instead of default
 import '@types/cheerio';
 
@@ -17,9 +17,9 @@ declare global {
 
   type FetchResponseAction<T = undefined> = PayloadAction<
     undefined extends T
-      ? { error?: Error; actionId?: string }
+      ? { error?: string; actionId?: string }
       :
-          | { error: Error; data?: undefined; actionId?: string }
+          | { error: string; data?: undefined; actionId?: string }
           | { error?: undefined; data: T; actionId?: string }
   >;
 

@@ -1,5 +1,5 @@
 import Base, { Plugin, Options } from './base';
-import { ellipsis, ErrorMessage, MangaStatus } from '~/utils';
+import { ellipsis, ErrorMessage, MangaStatus } from '@/utils';
 import { Buffer } from 'buffer';
 import queryString from 'query-string';
 import CryptoJS from 'crypto-js';
@@ -502,7 +502,7 @@ class PicaComic extends Base {
 
   randomString = (e: number = 32) => {
     let t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
-    let a = t.length;
+    let a = t?.length;
     let n = '';
     for (let i = 0; i < e; i++) {
       n += t.charAt(Math.floor(Math.random() * a));

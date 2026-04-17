@@ -1,6 +1,6 @@
 import Base, { Plugin, Options } from './base';
-import { MangaStatus, ErrorMessage } from '~/utils';
-import { AESDecrypt } from '~/utils';
+import { MangaStatus, ErrorMessage } from '@/utils';
+import { AESDecrypt } from '@/utils';
 
 interface BaseResponse<T> {
   code: number;

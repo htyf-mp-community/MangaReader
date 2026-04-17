@@ -2,7 +2,7 @@ import React from 'react';
 import { ColorType, SizeType, SafeAreaProps } from 'native-base/lib/typescript/components/types';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import { Center } from 'native-base';
-import VectorIcon from '~/components/VectorIcon';
+import VectorIcon from '@/components/VectorIcon';
 
 interface ErrorWithRetryProps extends SafeAreaProps {
   color?: ColorType;

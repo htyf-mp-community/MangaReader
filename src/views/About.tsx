@@ -10,18 +10,18 @@ import {
   ScrollView,
   useDisclose,
 } from 'native-base';
-import { action, useAppSelector, useAppDispatch } from '~/redux';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { Linking, Platform } from 'react-native';
 import { CacheManager } from '@georstat/react-native-image-cache';
-import { AsyncStatus } from '~/utils';
-import ErrorWithRetry from '~/components/ErrorWithRetry';
+import { AsyncStatus } from '@/utils';
+import ErrorWithRetry from '@/components/ErrorWithRetry';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SpinLoading from '~/components/SpinLoading';
-import PathModal from '~/components/PathModal';
+import SpinLoading from '@/components/SpinLoading';
+import PathModal from '@/components/PathModal';
 import jssdk from '@htyf-mp/js-sdk';
 
 const { backup, restore, clearCache, loadLatestRelease, setAndroidDownloadPath } = action;
-const christmasGif = require('~/assets/christmas.gif');
+const christmasGif = require('@/assets/christmas.gif');
 
 const About = () => {
   const { isOpen: isClearing, onOpen: openClearing, onClose: closeClearing } = useDisclose();

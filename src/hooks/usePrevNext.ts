@@ -8,7 +8,7 @@ export const usePrevNext = (chapterList: ChapterItem[], chapterHash: string) => 
       return [undefined, undefined];
     }
 
-    const prev = index < chapterList.length - 1 ? chapterList[index + 1] : undefined;
+    const prev = index < chapterList?.length - 1 ? chapterList[index + 1] : undefined;
     const next = index > 0 ? chapterList[index - 1] : undefined;
 
     return [prev, next];

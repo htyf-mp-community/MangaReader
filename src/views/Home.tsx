@@ -1,12 +1,12 @@
 import React, { useMemo, useState, useCallback, Fragment, FC, useEffect } from 'react';
-import { action, useAppSelector, useAppDispatch } from '~/redux';
-import { nonNullable, AsyncStatus } from '~/utils';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
+import { nonNullable, AsyncStatus } from '@/utils';
 import { View, Text, HStack, Button, Modal, useDisclose } from 'native-base';
 import { useFocusEffect } from '@react-navigation/native';
-import VectorIcon from '~/components/VectorIcon';
-import Bookshelf from '~/components/Bookshelf';
-import Rotate from '~/components/Rotate';
-import * as RootNavigation from '~/utils/navigation';
+import VectorIcon from '@/components/VectorIcon';
+import Bookshelf from '@/components/Bookshelf';
+import Rotate from '@/components/Rotate';
+import * as RootNavigation from '@/utils/navigation';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import jssdk from '@htyf-mp/js-sdk';
 
@@ -64,7 +64,7 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
   }, [headerRightOpacity]);
 
   const handleSelectAll = useCallback(() => {
-    if (selectedManga.length === list.length) {
+    if (selectedManga?.length === list?.length) {
       setSelectedManga([]);
       return;
     }
@@ -96,9 +96,9 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
             <VectorIcon
               source="materialCommunityIcons"
               name={
-                selectedManga.length <= 0
+                selectedManga?.length <= 0
                   ? 'checkbox-blank-outline'
-                  : selectedManga.length >= list.length
+                  : selectedManga?.length >= list?.length
                   ? 'checkbox-marked-outline'
                   : 'checkbox-intermediate'
               }
@@ -106,8 +106,8 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
             />
             <VectorIcon
               name="delete-forever"
-              opacity={selectedManga.length <= 0 ? 0.5 : 1}
-              disabled={selectedManga.length <= 0}
+              opacity={selectedManga?.length <= 0 ? 0.5 : 1}
+              disabled={selectedManga?.length <= 0}
               onPress={onOpen}
             />
           </HStack>
@@ -200,12 +200,12 @@ export const SearchAndAbout = () => {
         </Rotate>
         {batchStatus === AsyncStatus.Pending && (
           <Text position="absolute" top={0} right={0} color="white" fontWeight="extrabold">
-            {queue.length + stack.length}
+            {queue?.length + stack?.length}
           </Text>
         )}
-        {batchStatus !== AsyncStatus.Pending && fail.length > 0 && (
+        {batchStatus !== AsyncStatus.Pending && fail?.length > 0 && (
           <Text position="absolute" top={0} right={0} color="red.400" fontWeight="extrabold">
-            {fail.length}
+            {fail?.length}
           </Text>
         )}
       </View>

@@ -3,12 +3,12 @@ import DraggableFlatList, {
   ScaleDecorator,
   RenderItemParams,
 } from 'react-native-draggable-flatlist';
-import { action, useAppSelector, useAppDispatch } from '~/redux';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { Box, Text, VStack, HStack, Switch } from 'native-base';
-import { useDebouncedSafeAreaInsets } from '~/hooks';
-import { Plugin as PluginType } from '~/plugins';
+import { useDebouncedSafeAreaInsets } from '@/hooks';
+import { Plugin as PluginType } from '@/plugins';
 import { TouchableOpacity } from 'react-native';
-import ScoreRate from '~/components/ScoreRate';
+import ScoreRate from '@/components/ScoreRate';
 import jssdk from '@htyf-mp/js-sdk';
 
 const { sortPlugin, disablePlugin } = action;

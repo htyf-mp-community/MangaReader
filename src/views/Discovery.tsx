@@ -1,14 +1,14 @@
 import React, { useMemo, useState, useCallback, Fragment } from 'react';
 import { Text, Input, Button, HStack, useDisclose } from 'native-base';
-import { action, useAppSelector, useAppDispatch } from '~/redux';
-import { useRoute, useFocusEffect, RouteProp } from '@react-navigation/native';
-import { nonNullable, AsyncStatus } from '~/utils';
-import { Plugin, PluginMap } from '~/plugins';
+import { action, useAppSelector, useAppDispatch } from '@/redux';
+import { useRoute, useFocusEffect, RouteProp, useNavigationState } from '@react-navigation/native';
+import { nonNullable, AsyncStatus } from '@/utils';
+import { Plugin, PluginMap } from '@/plugins';
 import { Keyboard } from 'react-native';
-import ActionsheetSelect from '~/components/ActionsheetSelect';
-import VectorIcon from '~/components/VectorIcon';
-import Bookshelf from '~/components/Bookshelf';
-import * as RootNavigation from '~/utils/navigation';
+import ActionsheetSelect from '@/components/ActionsheetSelect';
+import VectorIcon from '@/components/VectorIcon';
+import Bookshelf from '@/components/Bookshelf';
+import * as RootNavigation from '@/utils/navigation';
 import jssdk from '@htyf-mp/js-sdk';
 
 const { loadDiscovery, setSource, setDiscoveryFilter, resetSearchFilter } = action;
@@ -40,7 +40,7 @@ const Discovery = ({ navigation }: StackDiscoveryProps) => {
     (mangaHash: string) => {
       navigation.push('Detail', { mangaHash });
     },
-    [navigation]
+    []
   );
 
   return (
@@ -91,7 +91,7 @@ export const SearchOption = () => {
     dispatch(loadDiscovery({ source, isReset: true }));
   };
 
-  if (discoveryOptions.length <= 0) {
+  if (discoveryOptions?.length <= 0) {
     return null;
   }
 
@@ -120,11 +120,27 @@ export const SearchOption = () => {
   );
 };
 
-export const PluginSelect = () => {
+export const PluginSelect = ({ route: routeProp, navigation: navigationProp }: { route?: RouteProp<RootStackParamList, 'Discovery' | 'Search'>; navigation?: any; canGoBack?: boolean } = {}) => {
   const { isOpen, onOpen: handleOpen, onClose: handleClose } = useDisclose();
   const { source, list } = useAppSelector((state) => state.plugin);
-  const route = useRoute<RouteProp<RootStackParamList, 'Discovery' | 'Search'>>();
   const dispatch = useAppDispatch();
+  
+  // 优先使用从 Header 传递的 route，否则使用 useNavigationState 安全获取当前路由
+  const routeFromState = useNavigationState((state) => {
+    if (!state || !state.routes || state.index === undefined) return null;
+    const currentRoute = state.routes[state.index];
+    if (currentRoute && (currentRoute.name === 'Discovery' || currentRoute.name === 'Search')) {
+      return {
+        name: currentRoute.name,
+        params: currentRoute.params || {},
+        key: currentRoute.key,
+      } as RouteProp<RootStackParamList, 'Discovery' | 'Search'>;
+    }
+    return null;
+  });
+  
+  // 使用传递的 route 或从 navigationState 获取的路由
+  const route = routeProp || routeFromState || { name: 'Discovery' as const, params: {} } as RouteProp<RootStackParamList, 'Discovery' | 'Search'>;
   const options = useMemo<{ label: string; value: string }[]>(() => {
     return list
       .filter((item) => !item.disabled)
@@ -192,7 +208,7 @@ export const PluginSelect = () => {
   );
 };
 
-export const SearchAndPlugin = () => {
+export const SearchAndPlugin = ({ route: routeProp, navigation: navigationProp, canGoBack }: { route?: RouteProp<RootStackParamList, 'Discovery' | 'Search'>; navigation?: any; canGoBack?: boolean } = {}) => {
   const [keyword, setKeyword] = useState('');
   const source = useAppSelector((state) => state.plugin.source);
 
@@ -202,7 +218,7 @@ export const SearchAndPlugin = () => {
 
   return (
     <HStack space={1} flex={1} alignItems="center">
-      <PluginSelect />
+      <PluginSelect route={routeProp} navigation={navigationProp} canGoBack={canGoBack} />
       <Input
         pl={1}
         w={0}

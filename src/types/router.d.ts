@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Plugin } from '~/plugins';
+import { Plugin } from '@/plugins';
 
 declare global {
   type RootStackParamList = {
