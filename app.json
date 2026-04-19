@@ -4,7 +4,7 @@
   "htyf": {
     "type": "app",
     "entry": "./src/index.tsx",
-    "version": "0.0.59",
+    "version": "0.0.60",
     "name": "漫画基地",
     "appid": "plugin_manga",
     "rotate": "portrait",
