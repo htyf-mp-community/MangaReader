@@ -1610,10 +1610,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@htyf-mp/cli@0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@htyf-mp/cli/-/cli-0.3.4.tgz#20b1a182cc6906a98365f4b8a983a8414c747116"
-  integrity sha512-e88il0ycb4E+SV00X0jDGwV3QgBvmHW78dCDGy/BLKxUsdUe8Fjgs3lfvRqKAks0Zm1sNaQRsZhe1Ca/t19L2g==
+"@htyf-mp/cli@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@htyf-mp/cli/-/cli-0.3.6.tgz#c3a1f09b2f922022ad2c48dd77d8cc0a93b4a2db"
+  integrity sha512-PY81guQyTdzLR3glTYh+J7WJyAL+fpumcQKB//ffD7Y6CyV1AVEgFoXzmMAjBQErAWPwEAuRtRxCJ+sfG9cZtw==
   dependencies:
     "@babel/core" "7.29.0"
     "@babel/plugin-proposal-decorators" "7.29.0"
@@ -10700,10 +10700,10 @@ react-native-nitro-cookies@1.2.0:
   resolved "https://registry.yarnpkg.com/react-native-nitro-cookies/-/react-native-nitro-cookies-1.2.0.tgz#0d89937f535fe1e5a88924b7533c48846b01b4e1"
   integrity sha512-BEn94Jk0yao51xcJzczaMLm9GAt4bk4Vi2P8u4IqiaKovDUZiR/30nTipdUhR3mQEs/X4hbuUYjAu2T5mQ+LBQ==
 
-react-native-nitro-modules@0.35.10:
-  version "0.35.10"
-  resolved "https://registry.yarnpkg.com/react-native-nitro-modules/-/react-native-nitro-modules-0.35.10.tgz#8f8e659ceed8638ab3ede871762e51893513214a"
-  integrity sha512-KsySOAIkbSTjNiX2GvXiNT9P5DMeZd99yvtE/+Lw7RXV7Ztxh9Z+YyAbYkBqadhN5J/KXXuPjhRYgyLOIZgsbQ==
+react-native-nitro-modules@0.36.1:
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/react-native-nitro-modules/-/react-native-nitro-modules-0.36.1.tgz#f697d96f772ce17930f15b81ad4b1e42550569ef"
+  integrity sha512-kBv/VvKqAmkXAvP1DxJMC9b/fRhh7JdSO4EUnPP46hJjrIFeFR8AwKm8mYaKZEuF014M/TVdv2vomVUW0umsQQ==
 
 react-native-orientation-locker@1.7.0:
   version "1.7.0"
@@ -10718,10 +10718,10 @@ react-native-reanimated@4.3.0:
     react-native-is-edge-to-edge "^1.3.1"
     semver "^7.7.3"
 
-react-native-reanimated@4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-4.5.0.tgz#7029849859625a6247c7cf11161d5bef2cb99b12"
-  integrity sha512-+iPfvK34PKKYP/p/4TaBliFkbfvjGDIvXuiiaxvISP5ip7sWegvlacwU/uAV6zNDSSmX0tDyER7PurPMKGDipA==
+react-native-reanimated@4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-4.5.1.tgz#be81ed3a96bf70baeeccdc24d3350883099b7dd3"
+  integrity sha512-RnMvtDuR+68ig864gAvZCOdZehqhC5rFmMo0kn+ARfgVSTvFeF6IFLBVgMPUu0KwihaapEyW24WRi6nEyy1kSA==
   dependencies:
     react-native-is-edge-to-edge "^1.3.1"
     semver "^7.7.3"
@@ -10796,10 +10796,10 @@ react-native-webview@14.0.1:
     escape-string-regexp "^4.0.0"
     invariant "2.2.4"
 
-react-native-worklets@0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/react-native-worklets/-/react-native-worklets-0.10.0.tgz#e2e8f8e1ba0eccc4e69f3a4e75894ecab4ba19b0"
-  integrity sha512-JhE6IxDf6iabC0qu3+TAKA4v9RlluXmoIngPQX7/QUByf75lfrsHZ6/dQhyjEWnp1EEQiwzz8Cpew140ZcewDw==
+react-native-worklets@0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/react-native-worklets/-/react-native-worklets-0.10.2.tgz#c59e6314d2da4a69f20d66f58bb964ee2275328a"
+  integrity sha512-LX27ejYI8veeDp59Z3rjo2pYyPa9euzSH8GUlem7cnNqfsDtGum8PQpkbzrqhLsWH0CjdeHR7p3sncCyYbwaVw==
   dependencies:
     "@babel/plugin-transform-arrow-functions" "^7.27.1"
     "@babel/plugin-transform-class-properties" "^7.28.6"
