@@ -401,16 +401,16 @@ class HappyManga extends Base {
     this.checkCloudFlare($);
 
     const chapterScriptContent =
-      ($('mip-data:not([id]) script:not([src])').first()[0] as cheerio.TagElement).children[0]
+      ($('mip-data:not([id]) script:not([src])').first()[0] as LegacyCheerioElement).children[0]
         .data || '';
     const data: ChapterDetailData = JSON.parse(chapterScriptContent);
     const mangaId = data.serie_code;
     const statusLabel = $('div.chapter-info div.ongoing-status').first().text().trim();
     const updateTimeLabel = $('div.update-time p.time').first().text().trim();
-    const author = ($('p.mg-sub-title a').toArray() as cheerio.TagElement[]).map(
+    const author = ($('p.mg-sub-title a').toArray() as LegacyCheerioElement[]).map(
       (a) => a.children[0].data || ''
     );
-    const tag = ($('p.mg-cate a').toArray() as cheerio.TagElement[]).map(
+    const tag = ($('p.mg-cate a').toArray() as LegacyCheerioElement[]).map(
       (a) => a.children[0].data || ''
     );
 

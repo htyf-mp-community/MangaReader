@@ -53,7 +53,8 @@ export default (env = {}) => {
   const { entry = './index.js', platform = 'ios' } = env;
   const context = env.context || __dirname;
   // 获取Repack的resolve配置
-  const _options = Repack.getResolveOptions();
+  // 平台必须传入，否则 Re.Pack 会生成 `.[platform].tsx` 扩展并漏掉 .ios/.android 文件。
+  const _options = Repack.getResolveOptions(platform);
 
   // 解析微前端相关配置
   let mpOptions = {};

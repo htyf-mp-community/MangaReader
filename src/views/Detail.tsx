@@ -23,7 +23,7 @@ import { useOnce, useDelayRender, useSplitWidth, useDebouncedSafeAreaInsets } fr
 import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { StyleSheet, RefreshControl, Linking } from 'react-native';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
-import { useRoute, useNavigation, useNavigationState } from '@react-navigation/native';
+import { useNavigationState } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { CachedImage } from '@georstat/react-native-image-cache';
 import ActionsheetSelect, { ActionsheetSelectProps } from '@/components/ActionsheetSelect';
@@ -318,8 +318,6 @@ const Detail = ({ route, navigation }: StackDetailProps) => {
             paddingRight: gap / 2 + insets.right,
           }}
           numColumns={numColumns}
-          estimatedItemSize={50}
-          estimatedListSize={{ width: windowWidth, height: windowHeight }}
           refreshControl={
             <RefreshControl
               refreshing={loadStatus === AsyncStatus.Pending && mangaHash === loadingMangaHash}
@@ -382,13 +380,7 @@ export const HeartAndBrowser = ({ route: routeProp, navigation: navigationProp }
   // 注意：如果 routeProp 存在，navigationProp 也应该存在（因为 Header 会传递两者）
   const route = routeProp || routeFromState;
   const navigation = navigationProp || null;
-  
-  if (!route || !navigation) {
-    // 如果无法获取路由或导航对象，返回空组件
-    return null;
-  }
-  
-  const { mangaHash, enabledMultiple = false, selected = [] } = route.params;
+  const { mangaHash = '', enabledMultiple = false, selected = [] } = route?.params || {};
   const dispatch = useAppDispatch();
   const sequence = useAppSelector((state) => state.setting.sequence);
   const favorites = useAppSelector((state) => state.favorites);
@@ -398,6 +390,10 @@ export const HeartAndBrowser = ({ route: routeProp, navigation: navigationProp }
     const favorite = favorites.find((item) => item.mangaHash === mangaHash);
     return { isActived: Boolean(favorite), enableBatch: favorite?.enableBatch || false };
   }, [favorites, mangaHash]);
+
+  if (!route || !navigation) {
+    return null;
+  }
 
   const handleClose = () => {
     navigation.setParams({ enabledMultiple: false, selected: [] });
@@ -574,7 +570,6 @@ export const PrehandleDrawer = () => {
           <FlashList
             data={list}
             renderItem={renderItem}
-            estimatedItemSize={50}
             contentContainerStyle={{
               paddingTop: insets.top,
               paddingRight: insets.right,

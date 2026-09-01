@@ -136,11 +136,11 @@ class CopyManga extends Base {
         const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
 
         const author = (
-          $$('div.title-truncate:not(.video-title):not(.tags) a').toArray() as cheerio.TagElement[]
+          $$('div.title-truncate:not(.video-title):not(.tags) a').toArray() as LegacyCheerioElement[]
         )
           .filter((item) => item.children[0])
           .map((item) => item.children[0].data || '');
-        const tag = ($$('div.title-truncate.tags a').toArray() as cheerio.TagElement[])
+        const tag = ($$('div.title-truncate.tags a').toArray() as LegacyCheerioElement[])
           .filter((item) => item.children[0])
           .map((item) => item.children[0].data || '');
 
@@ -189,11 +189,11 @@ class CopyManga extends Base {
         const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
 
         const author = (
-          $$('div.title-truncate:not(.video-title):not(.tags) a').toArray() as cheerio.TagElement[]
+          $$('div.title-truncate:not(.video-title):not(.tags) a').toArray() as LegacyCheerioElement[]
         )
           .filter((item) => item.children[0])
           .map((item) => item.children[0].data || '');
-        const tag = ($$('div.title-truncate.tags a').toArray() as cheerio.TagElement[])
+        const tag = ($$('div.title-truncate.tags a').toArray() as LegacyCheerioElement[])
           .filter((item) => item.children[0])
           .map((item) => item.children[0].data || '');
 
@@ -236,18 +236,18 @@ class CopyManga extends Base {
     const src = img.attr('data-original') || img.attr('src') || img.attr('data-cfsrc') || '';
     const [, cover] = src.match(PATTERN_HTTP_URL) || [];
     const tag = (
-      $('div#intro-block div.tag-block span[data-type=tags] a').toArray() as cheerio.TagElement[]
+      $('div#intro-block div.tag-block span[data-type=tags] a').toArray() as LegacyCheerioElement[]
     ).map((item) => item.children[0].data || '');
     const author = (
-      $('div#intro-block div.tag-block span[data-type=author] a').toArray() as cheerio.TagElement[]
+      $('div#intro-block div.tag-block span[data-type=author] a').toArray() as LegacyCheerioElement[]
     ).map((item) => item.children[0].data || '');
     const chapters = (
-      $('div#episode-block div.episode ul.btn-toolbar a').toArray() as cheerio.TagElement[]
+      $('div#episode-block div.episode ul.btn-toolbar a').toArray() as LegacyCheerioElement[]
     )
       .map((a) => {
         const $$ = cheerio.load(a);
         const chapterHref = a.attribs.href;
-        const chapterTitle = ($$('li')[0] as cheerio.TagElement).children[0].data || '';
+        const chapterTitle = ($$('li')[0] as LegacyCheerioElement).children[0].data || '';
         const [, chapterId] = chapterHref.match(PATTERN_CHAPTER_ID) || [];
 
         return {
@@ -311,7 +311,7 @@ class CopyManga extends Base {
     this.checkCloudFlare($, this.cfTitle);
 
     const scriptContent =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter(
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter(
         (script) =>
           PATTERN_SCRIPT_MANGA_ID.test(script.children[0].data || '') &&
           PATTERN_SCRIPT_CHAPTER_ID.test(script.children[0].data || '') &&
@@ -324,7 +324,7 @@ class CopyManga extends Base {
     const images = (
       $(
         'div.panel-body div.thumb-overlay-albums div.scramble-page img.lazy_img'
-      ).toArray() as cheerio.TagElement[]
+      ).toArray() as LegacyCheerioElement[]
     ).map((img) => {
       const src = img.attribs['data-original'] || img.attribs.src || '';
       const [, image] = src.match(PATTERN_HTTP_URL) || [];

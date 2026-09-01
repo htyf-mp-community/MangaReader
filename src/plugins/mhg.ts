@@ -203,12 +203,12 @@ class ManHuaGui extends Base {
         const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
 
         const author = (
-          $$('div.book-detail dd:nth-child(4) a').toArray() as cheerio.TagElement[]
+          $$('div.book-detail dd:nth-child(4) a').toArray() as LegacyCheerioElement[]
         ).map((item) => item.attribs.title);
         const tag = (
           $$(
             'div.book-detail dd:nth-child(3) span:nth-child(3) a'
-          ).toArray() as cheerio.TagElement[]
+          ).toArray() as LegacyCheerioElement[]
         ).map((item) => item.attribs.title);
 
         let status = MangaStatus.Unknown;
@@ -261,7 +261,7 @@ class ManHuaGui extends Base {
     const chapters: ChapterItem[] = [];
 
     const scriptContent =
-      ($('script:not([src])').get($('script:not([src])')?.length - 2) as cheerio.TagElement)
+      ($('script:not([src])').get($('script:not([src])')?.length - 2) as LegacyCheerioElement)
         .children[0].data || '';
     const [, mangaId, title] = scriptContent.match(PATTERN_MANGA_INFO) || [];
     const latest = $('div.chapter-bar a.blue').first().text();
@@ -270,12 +270,12 @@ class ManHuaGui extends Base {
     const author = (
       $(
         'div.book-detail ul.detail-list li:nth-child(2) span:nth-child(2) a'
-      ).toArray() as cheerio.TagElement[]
+      ).toArray() as LegacyCheerioElement[]
     ).map((a) => a.attribs.title);
     const tag = (
       $(
         'div.book-detail ul.detail-list li:nth-child(2) span:nth-child(1) a'
-      ).toArray() as cheerio.TagElement[]
+      ).toArray() as LegacyCheerioElement[]
     ).map((a) => a.attribs.title);
     const cover = 'https:' + $('p.hcover img').first().attr('src');
 
@@ -299,9 +299,9 @@ class ManHuaGui extends Base {
               .forEach((ul) => {
                 const $$$$ = cheerio.load(ul);
 
-                ($$$$('li a').toArray() as cheerio.TagElement[]).forEach((a) => {
+                ($$$$('li a').toArray() as LegacyCheerioElement[]).forEach((a) => {
                   const href = 'https://www.mhgui.com' + a.attribs.href;
-                  const chapterTitle = (a.children[0] as cheerio.TagElement).children[0].data || '';
+                  const chapterTitle = (a.children[0] as LegacyCheerioElement).children[0].data || '';
                   const [, chapterId] = href.match(PATTERN_CHAPTER_ID) || [];
 
                   chapters.push({
@@ -327,9 +327,9 @@ class ManHuaGui extends Base {
             .forEach((ul) => {
               const $$$ = cheerio.load(ul);
 
-              ($$$('li a').toArray() as cheerio.TagElement[]).forEach((a) => {
+              ($$$('li a').toArray() as LegacyCheerioElement[]).forEach((a) => {
                 const href = 'https://www.mhgui.com' + a.attribs.href;
-                const chapterTitle = (a.children[0] as cheerio.TagElement).children[0].data || '';
+                const chapterTitle = (a.children[0] as LegacyCheerioElement).children[0].data || '';
                 const [, chapterId] = href.match(PATTERN_CHAPTER_ID) || [];
 
                 chapters.push({
@@ -371,7 +371,7 @@ class ManHuaGui extends Base {
 
   handleChapter: Base['handleChapter'] = (text: string | null) => {
     const $ = cheerio.load(text || '');
-    const scriptAfterFilter = ($('script:not([src])').toArray() as cheerio.TagElement[]).filter(
+    const scriptAfterFilter = ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter(
       (script) => PATTERN_SCRIPT.test(script.children[0].data || '')
     );
 

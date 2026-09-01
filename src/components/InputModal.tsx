@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Text, Modal, Input, InputGroup, InputRightAddon } from 'native-base';
+import { Box, Text, Input, InputGroup, InputRightAddon } from 'native-base';
 import { KeyboardTypeOptions } from 'react-native';
+import InTreeDialog from '@/components/InTreeDialog';
 
 interface InputModalProps {
   title?: string;
@@ -26,8 +27,8 @@ const InputModal = ({
   };
 
   return (
-    <Modal useRNModal isOpen={isOpen} onClose={handleClose} size="full">
-      <Modal.Content w="full" p={3}>
+    <InTreeDialog visible={isOpen} onRequestClose={handleClose} fullWidth>
+      <Box w="full" p={3}>
         {title && (
           <Text fontSize="sm" color="gray.500" pb={2}>
             {title}
@@ -43,8 +44,8 @@ const InputModal = ({
           />
           {rightAddon && <InputRightAddon px={2} children={rightAddon} background="gray.100" />}
         </InputGroup>
-      </Modal.Content>
-    </Modal>
+      </Box>
+    </InTreeDialog>
   );
 };
 

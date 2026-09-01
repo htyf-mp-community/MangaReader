@@ -37,7 +37,7 @@ import {
   SafeArea,
   Orientation,
 } from '@/utils';
-import { FlashList, ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
+import { FlashList, FlashListRef, ListRenderItemInfo, ViewToken } from '@shopify/flash-list';
 import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { useDebouncedSafeAreaFrame } from '@/hooks';
 import { useFocusEffect } from '@react-navigation/native';
@@ -127,6 +127,8 @@ export interface ReaderRef {
   clearStateRef: () => void;
 }
 
+type ReaderItem = NonNullable<ReaderProps['data']>[number];
+
 // ==================== 自定义 Hooks ====================
 
 /**
@@ -212,7 +214,7 @@ const Reader: ForwardRefRenderFunction<ReaderRef, ReaderProps> = (
   const multipleData = useTakeTwo(data, 2, seat);
   
   /** FlashList 组件引用 */
-  const flashListRef = useRef<FlashList<any> | null>(null);
+  const flashListRef = useRef<FlashListRef<any> | null>(null);
   
   /** 横向模式下的图片状态缓存（按索引存储） */
   const horizontalStateRef = useRef<(ImageState | null)[]>([]);
@@ -586,7 +588,7 @@ const Reader: ForwardRefRenderFunction<ReaderRef, ReaderProps> = (
    */
   if (layoutMode === LayoutMode.Multiple) {
     return (
-      <FlashList
+      <FlashList<ReaderItem[]>
         key="multiple"
         ref={flashListRef}
         data={multipleData}
@@ -596,8 +598,6 @@ const Reader: ForwardRefRenderFunction<ReaderRef, ReaderProps> = (
         extraData={{ inverted, onTap, onLongPress, onImageLoad }}
         viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
         initialScrollIndex={initialScrollIndex}
-        estimatedItemSize={windowWidth}
-        estimatedListSize={{ width: windowWidth, height: windowHeight }}
         onScroll={onScroll}
         onScrollBeginDrag={onScrollBeginDrag}
         onScrollEndDrag={onScrollEndDrag}
@@ -621,7 +621,7 @@ const Reader: ForwardRefRenderFunction<ReaderRef, ReaderProps> = (
    */
   if (layoutMode === LayoutMode.Horizontal) {
     return (
-      <FlashList
+      <FlashList<ReaderItem>
         key="horizontal"
         ref={flashListRef}
         data={data}
@@ -631,8 +631,6 @@ const Reader: ForwardRefRenderFunction<ReaderRef, ReaderProps> = (
         extraData={{ inverted, onTap, onLongPress, onImageLoad }}
         viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
         initialScrollIndex={initialScrollIndex}
-        estimatedItemSize={windowWidth}
-        estimatedListSize={{ width: windowWidth, height: windowHeight }}
         onScroll={onScroll}
         onScrollBeginDrag={onScrollBeginDrag}
         onScrollEndDrag={onScrollEndDrag}
@@ -656,15 +654,13 @@ const Reader: ForwardRefRenderFunction<ReaderRef, ReaderProps> = (
    * - inverted: 反转滚动方向（用于从下到上阅读）
    */
   return (
-    <FlashList
+    <FlashList<ReaderItem>
       key="vertical"
       ref={flashListRef}
       data={data}
       {...({ inverted } as any)} // FlashList 可能不支持 inverted，但实际运行时可用
       extraData={{ inverted, onTap, onLongPress, onImageLoad }}
       initialScrollIndex={initialScrollIndex}
-      estimatedItemSize={(windowHeight * 3) / 5} // 默认高度估算
-      estimatedListSize={{ width: windowWidth, height: windowHeight }}
       onScroll={onScroll}
       onScrollBeginDrag={onScrollBeginDrag}
       onScrollEndDrag={onScrollEndDrag}

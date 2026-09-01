@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import queryString from 'query-string';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
-console.error(cheerio.load, 111)
+
 interface DiscoveryResponse {
   items: {
     author: string;
@@ -192,7 +192,7 @@ class BaoziManga extends Base {
     this.checkCloudFlare($);
 
     const list: IncreaseManga[] = (
-      $('.classify-items > div').toArray() as cheerio.TagElement[]
+      $('.classify-items > div').toArray() as LegacyCheerioElement[]
     ).map((div) => {
       const $$ = cheerio.load(div);
 
@@ -200,7 +200,7 @@ class BaoziManga extends Base {
       const cover = $$('.comics-card__poster > amp-img').attr('src') || '';
       const author = $$('.comics-card__info .tags').text().trim();
       const title = $$('.comics-card__info .comics-card__title').text().trim();
-      const tags = ($$('.comics-card__poster .tabs .tab').toArray() as cheerio.TagElement[]).map(
+      const tags = ($$('.comics-card__poster .tabs .tab').toArray() as LegacyCheerioElement[]).map(
         (span) => (span.children[0].data || '').trim()
       );
       const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
@@ -254,7 +254,7 @@ class BaoziManga extends Base {
     const tags = (
       $(
         '.comics-detail .l-content .comics-detail__info .tag-list .tag'
-      ).toArray() as cheerio.TagElement[]
+      ).toArray() as LegacyCheerioElement[]
     )
       .map((span) => (span.children[0].data || '').trim())
       .filter((item) => item !== '');
@@ -281,7 +281,7 @@ class BaoziManga extends Base {
         ...$('#chapter-items > div').toArray(),
         ...$('#chapters_other_list > div').toArray(),
         ...$('.l-content .pure-g > div.comics-chapters').toArray(),
-      ] as cheerio.TagElement[]
+      ] as LegacyCheerioElement[]
     )
       .map((div) => {
         const $$ = cheerio.load(div);
@@ -329,14 +329,14 @@ class BaoziManga extends Base {
     const $ = cheerio.load(text || '');
     this.checkCloudFlare($);
 
-    const next = ($('div.next_chapter a').toArray() as cheerio.TagElement[]).find((a) =>
+    const next = ($('div.next_chapter a').toArray() as LegacyCheerioElement[]).find((a) =>
       (a.children[0].data || '').includes('下一页')
     );
     const href = next ? next.attribs.href : '';
     const [, hash, _sectionSlot, _chapterSlot, pageSlot] = href.match(PATTERN_SLOT_HTML) || [];
     const title = $('.comic-chapter .header .l-content .title').first().text();
     const images = (
-      $('.comic-contain > div:not(#div_top_ads):not(.mobadsq)').toArray() as cheerio.TagElement[]
+      $('.comic-contain > div:not(#div_top_ads):not(.mobadsq)').toArray() as LegacyCheerioElement[]
     ).map((div) => {
       const $$ = cheerio.load(div);
       return {

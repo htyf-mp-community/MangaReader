@@ -6,7 +6,7 @@ import { useAppState } from './useAppState';
 import { Volume } from '@/utils';
 
 export const useVolumeUpDown = (callback: (type: Volume) => void, enable = true) => {
-  const volumeRef = useRef<number>();
+  const volumeRef = useRef<number | undefined>(undefined);
   const audioSessionIsInactiveRef = useRef<boolean>(false);
   const [initVolume, setInitVolume] = useState<number>();
 

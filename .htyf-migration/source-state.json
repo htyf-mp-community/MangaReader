@@ -1,0 +1,35 @@
+{
+  "source": {
+    "repository": "https://github.com/youniaogu/MangaReader",
+    "path": "/Users/dgz/code/github/MangaReader",
+    "branch": "master",
+    "commit": "4ea8b7e1ac0163e3006e9509268ed434435a9ced",
+    "workingTreeChangesIncluded": false
+  },
+  "target": {
+    "path": "/Users/dgz/code/github/MangaReader/htyf",
+    "htyfAppId": "plugin_manga",
+    "reactNativeVersion": "0.86.3"
+  },
+  "migratedAt": "2026-09-01T09:08:00+08:00",
+  "features": {
+    "routes": "completed",
+    "mangaSources": "completed",
+    "reader": "completed",
+    "favoritesAndBatchUpdate": "completed",
+    "downloadAndExport": "completed",
+    "backupAndRestore": "completed",
+    "webviewAndCookies": "completed",
+    "mmkvPersistence": "completed",
+    "inTreeOverlays": "completed",
+    "capsuleHeader": "completed"
+  },
+  "blocked": [],
+  "verification": [
+    "npx tsc --noEmit --pretty false",
+    "npm test -- --runInBand",
+    "npm run lint",
+    "npx webpack --config webpack.config.mjs --mode production --env platform=ios",
+    "npx webpack --config webpack.config.mjs --mode production --env platform=android"
+  ]
+}

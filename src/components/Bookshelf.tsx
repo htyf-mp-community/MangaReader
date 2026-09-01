@@ -43,7 +43,7 @@ const Bookshelf = ({
   isSelectMode,
   itemOnLongPress,
 }: BookshelfProps) => {
-  const { gap, insets, itemWidth, numColumns, windowWidth, windowHeight } = useSplitWidth({
+  const { gap, insets, itemWidth, numColumns } = useSplitWidth({
     gap: 8,
     minNumColumns: 3,
     maxSplitWidth: 180,
@@ -88,8 +88,6 @@ const Bookshelf = ({
       data={list}
       extraData={extraData}
       numColumns={numColumns}
-      estimatedItemSize={itemWidth / coverAspectRatio}
-      estimatedListSize={{ width: windowWidth, height: windowHeight }}
       contentContainerStyle={{
         padding: gap / 2,
         paddingLeft: gap / 2 + insets.left,

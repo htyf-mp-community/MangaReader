@@ -301,7 +301,7 @@ class KL extends Base {
     const tag = li
       .filter((item) => cheerio.load(item)('b').text().includes('Genre'))
       .map((item) =>
-        (cheerio.load(item)('a').toArray() as cheerio.TagElement[]).map(
+        (cheerio.load(item)('a').toArray() as LegacyCheerioElement[]).map(
           (a) => a.children[0].data || ''
         )
       );
@@ -362,7 +362,7 @@ class KL extends Base {
     if ($('meta').toArray()?.length > 0) {
       const cid = $('input#chapter').val();
       const [, , name = '', title = ''] = (
-        $('div.chapter-content-top li span[itemprop=name]').toArray() as cheerio.TagElement[]
+        $('div.chapter-content-top li span[itemprop=name]').toArray() as LegacyCheerioElement[]
       ).map((span) => span.children[0].data);
 
       return {
@@ -380,7 +380,7 @@ class KL extends Base {
       };
     }
 
-    const images = ($('p img').toArray() as cheerio.TagElement[])
+    const images = ($('p img').toArray() as LegacyCheerioElement[])
       .filter((img) => PATTERN_IMAGE_ALT.test(img.attribs.alt))
       .map((img) => img.attribs.src);
 

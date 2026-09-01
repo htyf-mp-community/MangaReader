@@ -2,6 +2,10 @@ import Base, { Plugin, Options } from './base';
 import { MangaStatus, ErrorMessage, ScrambleType } from '@/utils';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
+import { extractScriptImageUrls } from './rm5Parser';
+
+/* Legacy response shapes are kept as migration documentation while RM5 serves streamed HTML. */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface ScriptData<T> {
   props: {
@@ -115,6 +119,7 @@ interface ChapterImageData {
   };
   description: string;
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 const discoveryOptions = [
   {
@@ -261,7 +266,7 @@ class RouMan5 extends Base {
           const [, month, day, year] = dateMatch;
           try {
             updateTime = dayjs(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`).format('YYYY-MM-DD');
-          } catch (e) {
+          } catch {
             // 日期解析失败，忽略
           }
         }
@@ -340,7 +345,7 @@ class RouMan5 extends Base {
           const [, month, day, year] = dateMatch;
           try {
             updateTime = dayjs(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`).format('YYYY-MM-DD');
-          } catch (e) {
+          } catch {
             // 日期解析失败，忽略
           }
         }
@@ -434,7 +439,7 @@ class RouMan5 extends Base {
         const [, month, day, year] = dateMatch;
         try {
           updateTime = dayjs(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`).format('YYYY-MM-DD');
-        } catch (e) {
+        } catch {
           // 日期解析失败，忽略
         }
       }
@@ -475,6 +480,7 @@ class RouMan5 extends Base {
         sourceName: this.name,
         mangaId,
         title,
+        infoCover: bookCover,
         latest,
         updateTime: updateTime || '',
         author: author.length > 0 ? author : [],
@@ -523,26 +529,8 @@ class RouMan5 extends Base {
 
       // 从 script 内容中提取图片 URL 和索引
       // 匹配格式: "backgroundImage":"url(\"https://...\")" 或 "imageUrl":"..."
-      const imagePairs: Array<{ ind: number; imageUrl: string }> = [];
-      
-      // 匹配所有可能的图片 URL 格式
-      let match;
-      
-      // 1. 优先匹配 imageUrl 格式（带 ind）: "imageUrl":"https://..."..."ind":数字
-      // 格式: "imageUrl":"URL","ind":数字 或 "imageUrl":"URL"..."ind":数字
-      const imageUrlWithIndRegex = /https?:\/\/[^\\"]+?\.(?:jpg|jpeg|png|webp|gif)/gi;
-      while ((match = imageUrlWithIndRegex.exec(allScriptContent)) !== null) {
-        const imageUrl = match[1];
-        const ind = 0;
-        imagePairs.push({ ind, imageUrl });
-      }
-
-      // 按 ind 排序
-      // imagePairs.sort((a, b) => a.ind - b.ind);
-      
       // 构建图片列表
-      const images = imagePairs.map((pair) => {
-        const uri = pair.imageUrl;
+      const images = extractScriptImageUrls(allScriptContent).map((uri) => {
         const isGif = uri?.includes('.gif');
         const hasScramble = uri?.includes('sr:1');
         const needUnscramble = !isGif && hasScramble;

@@ -248,7 +248,7 @@ const ScrambleImage = ({
       height: imageState.multipleFitHeight || '100%',
     };
   }, [layoutMode, imageState, orientation, defaultPortraitHeight, defaultLandscapeHeight]);
-  const canvasRef = useRef<Canvas>(null);
+  const canvasRef = useRef<any>(null);
   const uriRef = useRef(uri);
 
   const updateData = useCallback(
@@ -273,7 +273,7 @@ const ScrambleImage = ({
         const image = new CanvasImage(canvasRef.current);
 
         image.addEventListener('error', handleError);
-        image.addEventListener('load', (event) => {
+        image.addEventListener('load', (event: { target: { width: number; height: number } }) => {
           // don't use Image.getSize from react-native
           // Image.getSize return wrong width and height when image have a huge width or height
           // https://github.com/facebook/react-native/issues/31130
@@ -301,7 +301,7 @@ const ScrambleImage = ({
 
           canvasRef.current
             .toDataURL()
-            .then((res) => {
+            .then((res: string) => {
               const { dWidth, dHeight } = aspectFit(
                 { width, height },
                 {
@@ -520,7 +520,7 @@ const Base64Image = ({
         },
         handleError
       );
-    } catch (error) {
+    } catch {
       handleError();
       return;
     }

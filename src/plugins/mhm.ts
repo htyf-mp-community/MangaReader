@@ -125,7 +125,7 @@ class ManHuaMao extends Base {
     const $ = cheerio.load(text || '');
     const list: IncreaseManga[] = [];
 
-    ($('div.comic-book-unit').toArray() as cheerio.TagElement[]).forEach((div) => {
+    ($('div.comic-book-unit').toArray() as LegacyCheerioElement[]).forEach((div) => {
       const $$ = cheerio.load(div);
       const img = $$('a img.comic-book-cover');
 
@@ -133,12 +133,12 @@ class ManHuaMao extends Base {
       const title = $$('div.media-body h2 a').first().text() || '';
       const cover = img.attr('src') || img.attr('data-original') || '';
       const author = (
-        $$('div.media-body div.comic-creators ul a').toArray() as cheerio.TagElement[]
+        $$('div.media-body div.comic-creators ul a').toArray() as LegacyCheerioElement[]
       ).map((a) => a.children[0].data || '');
       const tags = (
         $$(
           'div.media-body div.comic-categories li.list-inline-item span.badge'
-        ).toArray() as cheerio.TagElement[]
+        ).toArray() as LegacyCheerioElement[]
       ).map((span) => (span.children[0].data || '').trim());
       const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
 
@@ -181,7 +181,7 @@ class ManHuaMao extends Base {
         const title = $$('a.d-block').attr('title') || '';
         const cover = img.attr('src') || img.attr('data-original') || '';
         const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
-        const author = ($$('div.comic-author a').toArray() as cheerio.TagElement[]).map(
+        const author = ($$('div.comic-author a').toArray() as LegacyCheerioElement[]).map(
           (a) => a.children[0].data || ''
         );
 
@@ -225,13 +225,13 @@ class ManHuaMao extends Base {
     const statusLabel = $('meta[property=og:novel:status]').first().attr('content') || '';
     const updateTimeLabel = $('meta[property=og:novel:update_time]').first().attr('content') || '';
     const href = $('meta[property=og:url]').first().attr('content') || '';
-    const tags = ($('div.comic-info ul.tags li a').toArray() as cheerio.TagElement[])
+    const tags = ($('div.comic-info ul.tags li a').toArray() as LegacyCheerioElement[])
       .map((a) => (a.children[0].data || '').trim())
       .filter((tag) => tag !== '连载中' && tag !== '已完结');
     const [updateTime = ''] = updateTimeLabel.match(PATTERN_FULL_TIME) || [];
     const [, mangaId] = href.match(PATTERN_MANGA_ID) || [];
 
-    ($('ol.links-of-books li a').toArray() as cheerio.TagElement[]).forEach((a) => {
+    ($('ol.links-of-books li a').toArray() as LegacyCheerioElement[]).forEach((a) => {
       const [, , chapterId] = a.attribs.href.match(PATTERN_CHAPTER_ID) || [];
 
       chapters.push({
@@ -276,7 +276,7 @@ class ManHuaMao extends Base {
     const [, mangaId, chapterId] =
       ($('link[rel=canonical]').first().attr('href') || '').match(PATTERN_CHAPTER_ID) || [];
     const scriptContent =
-      ($('script:not([src]):not([type])').toArray() as cheerio.TagElement[]).filter((script) =>
+      ($('script:not([src]):not([type])').toArray() as LegacyCheerioElement[]).filter((script) =>
         PATTERN_SCRIPT.test(script.children[0].data || '')
       )[0].children[0].data || '';
     const [, base64] = scriptContent.match(PATTERN_SCRIPT) || [];

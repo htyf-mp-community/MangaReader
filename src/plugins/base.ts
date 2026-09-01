@@ -1,4 +1,5 @@
 import { clearAllCookie, ErrorMessage } from '@/utils';
+import type { CheerioAPI } from 'cheerio';
 
 interface InitialData {
   id: Plugin;
@@ -199,10 +200,10 @@ abstract class Base {
   /**
    * @description check response is hit by cloudflare protect
    * @public
-   * @param {cheerio.Root} $
+   * @param {CheerioAPI} $
    * @memberof Base
    */
-  public checkCloudFlare = ($: cheerio.Root, cfTitle?: string) => {
+  public checkCloudFlare = ($: CheerioAPI, cfTitle?: string) => {
     const title = $('title').first().text().trim();
 
     if (title === 'Just a moment...' || (typeof cfTitle === 'string' && title === cfTitle)) {

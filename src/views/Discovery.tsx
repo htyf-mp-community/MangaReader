@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, Fragment } from 'react';
 import { Text, Input, Button, HStack, useDisclose } from 'native-base';
 import { action, useAppSelector, useAppDispatch } from '@/redux';
-import { useRoute, useFocusEffect, RouteProp, useNavigationState } from '@react-navigation/native';
+import { useFocusEffect, RouteProp, useNavigationState } from '@react-navigation/native';
 import { nonNullable, AsyncStatus } from '@/utils';
 import { Plugin, PluginMap } from '@/plugins';
 import { Keyboard } from 'react-native';
@@ -40,7 +40,7 @@ const Discovery = ({ navigation }: StackDiscoveryProps) => {
     (mangaHash: string) => {
       navigation.push('Detail', { mangaHash });
     },
-    []
+    [navigation]
   );
 
   return (
@@ -120,7 +120,7 @@ export const SearchOption = () => {
   );
 };
 
-export const PluginSelect = ({ route: routeProp, navigation: navigationProp }: { route?: RouteProp<RootStackParamList, 'Discovery' | 'Search'>; navigation?: any; canGoBack?: boolean } = {}) => {
+export const PluginSelect = ({ route: routeProp, navigation: _navigationProp }: { route?: RouteProp<RootStackParamList, 'Discovery' | 'Search'>; navigation?: any; canGoBack?: boolean } = {}) => {
   const { isOpen, onOpen: handleOpen, onClose: handleClose } = useDisclose();
   const { source, list } = useAppSelector((state) => state.plugin);
   const dispatch = useAppDispatch();

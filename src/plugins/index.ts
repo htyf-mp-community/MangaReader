@@ -17,7 +17,6 @@ import HAPPY from './happy';
 export * from './base';
 
 export const PluginMap = new Map<Plugin, Base>([
-  [BZM.id, BZM],
   [COPY.id, COPY],
   [MBZ.id, MBZ],
   [HAPPY.id, HAPPY],
@@ -27,6 +26,7 @@ export const PluginMap = new Map<Plugin, Base>([
   [PICA.id, PICA],
   [RM5.id, RM5],
   [KL.id, KL],
+  [BZM.id, BZM],
   [DMZJ.id, DMZJ],
   [MHDB.id, MHDB],
   [MHM.id, MHM],
@@ -34,7 +34,8 @@ export const PluginMap = new Map<Plugin, Base>([
 ]);
 export const combineHash = Base.combineHash;
 export const splitHash = Base.splitHash;
-export const defaultPlugin: Plugin = PluginMap.entries().next().value[0];
+/** 默认漫画源必须与源应用一致，避免首次启动时静默切换数据源。 */
+export const defaultPlugin: Plugin = COPY.id;
 export const defaultPluginList = Array.from(PluginMap.values()).map((item) => {
   return {
     label: item.shortName,

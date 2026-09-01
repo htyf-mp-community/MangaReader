@@ -176,7 +176,7 @@ class ManHuaGuiMobile extends Base {
     const $ = cheerio.load(text || '');
     const list: IncreaseManga[] = [];
 
-    ($('li > a').toArray() as cheerio.TagElement[]).forEach((a) => {
+    ($('li > a').toArray() as LegacyCheerioElement[]).forEach((a) => {
       const $$ = cheerio.load(a);
       const href = 'https://m.manhuagui.com' + a.attribs.href;
       const title = $$('h3').first().text();
@@ -226,7 +226,7 @@ class ManHuaGuiMobile extends Base {
     const $ = cheerio.load(text || '');
     const list: IncreaseManga[] = [];
 
-    ($('ul#detail > li > a').toArray() as cheerio.TagElement[]).forEach((a) => {
+    ($('ul#detail > li > a').toArray() as LegacyCheerioElement[]).forEach((a) => {
       const $$ = cheerio.load(a);
       const href = 'https://m.manhuagui.com' + a.attribs.href;
       const title = $$('h3').first().text();
@@ -291,7 +291,7 @@ class ManHuaGuiMobile extends Base {
     const chapters: ChapterItem[] = [];
 
     const scriptContent =
-      ($('script:not([src]):not([type])').toArray() as cheerio.TagElement[]).filter((script) =>
+      ($('script:not([src]):not([type])').toArray() as LegacyCheerioElement[]).filter((script) =>
         PATTERN_MANGA_INFO.test(script.children[0].data || '')
       )[0].children[0].data || '';
     const [, mangaId] = scriptContent.match(PATTERN_MANGA_INFO) || [];
@@ -313,7 +313,7 @@ class ManHuaGuiMobile extends Base {
       if (decodeHtml) {
         const $$ = cheerio.load(decodeHtml);
 
-        ($$('ul > li > a').toArray() as cheerio.TagElement[]).forEach((a) => {
+        ($$('ul > li > a').toArray() as LegacyCheerioElement[]).forEach((a) => {
           const $$$ = cheerio.load(a);
           const title = $$$('b').first().text();
           const href = 'https://m.manhuagui.com' + a.attribs.href;
@@ -329,7 +329,7 @@ class ManHuaGuiMobile extends Base {
         });
       }
     } else {
-      ($('#chapterList > ul > li > a').toArray() as cheerio.TagElement[]).forEach((a) => {
+      ($('#chapterList > ul > li > a').toArray() as LegacyCheerioElement[]).forEach((a) => {
         const $$ = cheerio.load(a);
         const title = $$('b').first().text();
         const href = 'https://m.manhuagui.com' + a.attribs.href;
@@ -372,7 +372,7 @@ class ManHuaGuiMobile extends Base {
 
   handleChapter: Base['handleChapter'] = (text: string | null) => {
     const $ = cheerio.load(text || '');
-    const scriptAfterFilter = ($('script:not([src])').toArray() as cheerio.TagElement[]).filter(
+    const scriptAfterFilter = ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter(
       (item) => PATTERN_SCRIPT.test(item.children[0].data || '')
     );
 

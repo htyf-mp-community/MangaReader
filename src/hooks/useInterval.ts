@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 export const useInterval = (callback: () => void, enable = true, ms = 5000) => {
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     const fn = () => {

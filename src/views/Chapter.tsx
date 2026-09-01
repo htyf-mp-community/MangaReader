@@ -332,7 +332,7 @@ const Chapter = ({ route, navigation }: StackChapterProps) => {
     setRender(false);
     try {
       await cache.initCacheMap();
-    } catch (error) {
+    } catch {
       // 缓存初始化失败不影响阅读，静默处理
     } finally {
       setRender(true);
@@ -683,28 +683,6 @@ const Chapter = ({ route, navigation }: StackChapterProps) => {
   }, [inverted, dispatch, toast]);
   
   /**
-   * 布局模式循环切换
-   * 横向翻页 → 纵向滚动 → 双页模式 → 横向翻页
-   */
-  const handleModeToggle = useCallback(() => {
-    switch (mode) {
-      case LayoutMode.Horizontal: {
-        handleVertical();
-        break;
-      }
-      case LayoutMode.Vertical: {
-        handleMultiple();
-        break;
-      }
-      case LayoutMode.Multiple:
-      default: {
-        handleHorizontal();
-        break;
-      }
-    }
-  }, [mode]);
-  
-  /**
    * 切换到纵向滚动模式（条漫模式）
    */
   const handleVertical = useCallback(() => {
@@ -729,6 +707,22 @@ const Chapter = ({ route, navigation }: StackChapterProps) => {
     readerRef.current?.scrollToIndex(multiplePre + Math.ceil(current / 2) - 1, false);
     dispatch(setMode(LayoutMode.Multiple));
   }, [multiplePre, current, dispatch, toast]);
+
+  /** 在三种阅读布局之间循环切换。 */
+  const handleModeToggle = useCallback(() => {
+    switch (mode) {
+      case LayoutMode.Horizontal:
+        handleVertical();
+        break;
+      case LayoutMode.Vertical:
+        handleMultiple();
+        break;
+      case LayoutMode.Multiple:
+      default:
+        handleHorizontal();
+        break;
+    }
+  }, [handleHorizontal, handleMultiple, handleVertical, mode]);
   
   /**
    * 打开定时翻页间隔设置弹窗

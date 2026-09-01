@@ -20,7 +20,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
         非常抱歉，应用遇到未知错误:
       </Text>
       <Text fontSize="md" color="red.500">
-        {error.message}
+        {error instanceof Error ? error.message : String(error)}
       </Text>
       <Button variant="link" size="lg" onPress={resetErrorBoundary}>
         重试

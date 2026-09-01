@@ -73,7 +73,7 @@ class NHentai extends Base {
     (
       $(
         'div#content div.container.index-container:not(.index-popular) div.gallery a.cover'
-      ).toArray() as cheerio.TagElement[]
+      ).toArray() as LegacyCheerioElement[]
     ).forEach((a) => {
       const $$ = cheerio.load(a);
       const href = 'https://nhentai.net' + a.attribs.href;
@@ -101,14 +101,14 @@ class NHentai extends Base {
     this.checkCloudFlare($);
     const list: IncreaseManga[] = [];
     const isMangaInfo =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) =>
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((item) =>
         PATTERN_SCRIPT.test(item.children[0].data || '')
       )?.length > 0;
 
     if (isMangaInfo) {
       const cover = $('div#content div#cover img.lazyload').attr('data-src') || '';
       const scriptContent =
-        ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) =>
+        ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((item) =>
           PATTERN_SCRIPT.test(item.children[0].data || '')
         )[0].children[0].data || '';
       const [, stringifyData] = scriptContent.match(PATTERN_SCRIPT) || [];
@@ -155,7 +155,7 @@ class NHentai extends Base {
       (
         $(
           'div#content div.container.index-container:not(.index-popular) div.gallery a.cover'
-        ).toArray() as cheerio.TagElement[]
+        ).toArray() as LegacyCheerioElement[]
       ).forEach((a) => {
         const $$ = cheerio.load(a);
         const href = 'https://nhentai.net' + a.attribs.href;
@@ -198,7 +198,7 @@ class NHentai extends Base {
     };
     const cover = $('div#content div#cover img.lazyload').attr('data-src') || '';
     const scriptContent =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) =>
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((item) =>
         PATTERN_SCRIPT.test(item.children[0].data || '')
       )[0].children[0].data || '';
     const [, stringifyData] = scriptContent.match(PATTERN_SCRIPT) || [];
@@ -249,7 +249,7 @@ class NHentai extends Base {
     this.checkCloudFlare($);
 
     const scriptContent =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) =>
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((item) =>
         PATTERN_SCRIPT.test(item.children[0].data || '')
       )[0].children[0].data || '';
     const [, stringifyData] = scriptContent.match(PATTERN_SCRIPT) || [];

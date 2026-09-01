@@ -1,5 +1,5 @@
 import { ErrorMessage, MangaStatus, ScrambleType } from './enum';
-import { Draft, Draft07, JsonError, JsonSchema } from 'json-schema-library';
+import { compileSchema, JsonError, JsonSchema } from 'json-schema-library';
 import { delay, race, Effect } from 'redux-saga/effects';
 import { ImageState } from '@/components/ComicImage';
 import { Platform } from 'react-native';
@@ -80,8 +80,7 @@ export function validate<T = any>(
   schema?: JsonSchema,
   initData?: Record<string, any>
 ): data is T {
-  const jsonSchema: Draft = new Draft07(schema);
-  const errors: JsonError[] = jsonSchema.validate(data);
+  const { errors }: { errors: JsonError[] } = compileSchema(schema || {}).validate(data);
 
   if (nonNullable(initData) && errors?.length > 0) {
     errors.forEach((error) => {

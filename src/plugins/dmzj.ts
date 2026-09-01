@@ -156,7 +156,7 @@ class DongManZhiJia extends Base {
         this.uid = uid;
         return '获取uid成功: ' + uid;
       }
-    } catch (e) {}
+    } catch {}
   };
 
   prepareDiscoveryFetch: Base['prepareDiscoveryFetch'] = (page, { type, region, status, sort }) => {
@@ -237,7 +237,7 @@ class DongManZhiJia extends Base {
     const $ = cheerio.load(text || '');
 
     const scriptContent =
-      ($('script:not([src]):not([type])').toArray() as cheerio.TagElement[]).filter((item) =>
+      ($('script:not([src]):not([type])').toArray() as LegacyCheerioElement[]).filter((item) =>
         PATTERN_SEARCH_SCRIPT.test(item.children[0].data || '')
       )[0].children[0].data || '';
     const [, stringifyData] = scriptContent.match(PATTERN_SEARCH_SCRIPT) || [];
@@ -291,7 +291,7 @@ class DongManZhiJia extends Base {
     };
 
     const chapterScriptContent =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) => {
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((item) => {
         if (item.children?.length <= 0) {
           return false;
         }
@@ -323,7 +323,7 @@ class DongManZhiJia extends Base {
     }));
 
     const infoScriptContent =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((item) => {
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((item) => {
         if (item.children?.length <= 0) {
           return false;
         }
@@ -332,23 +332,26 @@ class DongManZhiJia extends Base {
       })[0].children[0].data || '';
     const [, mangaId] = infoScriptContent.match(PATTERN_MANGAID_SCRIPT) || [];
 
-    const img: cheerio.TagElement = $('div.Introduct_Sub div#Cover img').get(0);
+    const img = $('div.Introduct_Sub div#Cover img').get(0) as LegacyCheerioElement | undefined;
+    if (!img) {
+      return { error: new Error(ErrorMessage.WrongResponse + '缺少漫画封面信息') };
+    }
     const title = img.attribs.title;
     const cover = img.attribs.src;
     const [text1, text2, , text4] = $(
       'div.Introduct_Sub div.sub_r p.txtItme'
-    ).toArray() as cheerio.TagElement[];
+    ).toArray() as LegacyCheerioElement[];
     const author = text1.children
       .filter((item) => item.type === 'tag' && item.name === 'a')
-      .map((item) => (item as cheerio.TagElement).children[0].data || '');
+      .map((item) => (item as LegacyCheerioElement).children[0].data || '');
     const tag = text2.children
       .filter((item) => item.type === 'tag' && item.name === 'a')
-      .map((item) => (item as cheerio.TagElement).children[0].data || '');
+      .map((item) => (item as LegacyCheerioElement).children[0].data || '');
     const fullTime =
       (
         text4.children.filter(
           (item) => item.type === 'tag' && item.name === 'span' && item.children?.length > 0
-        )[0] as cheerio.TagElement
+        )[0] as LegacyCheerioElement
       ).children[0].data || '';
     const [updateTime = ''] = fullTime.match(PATTERN_FULL_TIME) || [];
 

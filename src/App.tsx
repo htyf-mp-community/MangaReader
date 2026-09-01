@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { createNativeStackNavigator, NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { navigationRef, customTheme, AsyncStatus } from '@/utils';
+import { navigationRef, customTheme } from '@/utils';
 import { HeartAndBrowser, PrehandleDrawer } from '@/views/Detail';
 import { SearchAndPlugin, PluginSelect } from '@/views/Discovery';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,13 +8,9 @@ import { store, useAppSelector } from '@/redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
 import { useMessageToast } from '@/hooks';
-import { Alert, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 import Header from '@/components/Header';
-
-interface NavigationScreenProps {
-  ready?: boolean;
-}
 
 import Home from '@/views/Home';
 import Search from '@/views/Search';
@@ -28,8 +24,7 @@ import About from '@/views/About';
 const styles = StyleSheet.create({ wrapper: { flex: 1 } });
 const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
 
-const NavigationScreen = ({ ready = false }: NavigationScreenProps) => {
-  const launchStatus = useAppSelector((state) => state.app.launchStatus);
+const NavigationScreen = () => {
   const latestRelease = useAppSelector((state) => state.release.latest);
   const haveUpdate = Boolean(latestRelease);
 
@@ -66,14 +61,12 @@ const NavigationScreen = ({ ready = false }: NavigationScreenProps) => {
 };
 
 const App = () => {
-  const [ready, setReady] = useState(false);
-
   return (
     <GestureHandlerRootView style={styles.wrapper}>
       <Provider store={store}>
         <NativeBaseProvider theme={customTheme}>
-          <NavigationContainer ref={navigationRef} onReady={() => setReady(true)}>
-            <NavigationScreen ready={ready} />
+          <NavigationContainer ref={navigationRef}>
+            <NavigationScreen />
             <PrehandleDrawer />
           </NavigationContainer>
         </NativeBaseProvider>

@@ -1,6 +1,6 @@
 import queryString from 'query-string';
-import { Alert } from 'react-native';
-import axios from 'axios';
+
+/** 执行漫画源请求并保留源应用的非 2xx 响应解析语义。 */
 export const fetchData = ({
   url,
   method = 'GET',
@@ -9,75 +9,52 @@ export const fetchData = ({
   timeout = 10000,
 }: FetchData) => {
   const controller = new AbortController();
-
-  // 将 Headers 对象转换为普通对象
-  const axiosHeaders: Record<string, string> = {};
-  headers.forEach((value, key) => {
-    axiosHeaders[key] = value;
-  });
-
-  // 构建 axios 配置
-  const axiosConfig: any = {
+  const init: RequestInit & { headers: Headers } = {
     method: method.toUpperCase(),
-    url,
-    headers: axiosHeaders,
-    timeout,
+    headers,
     signal: controller.signal,
-    withCredentials: true,
-    maxRedirects: 5,
+    redirect: 'follow',
+    credentials: 'include',
   };
 
-  // 处理请求体
-  if (Object.keys(body)?.length > 0) {
-    if (method.toUpperCase() === 'GET') {
-      axiosConfig.params = body;
-    } else if (method.toUpperCase() === 'POST') {
+  if (Object.keys(body).length > 0) {
+    if (init.method === 'GET') {
+      url += '?' + queryString.stringify(body);
+    }
+    if (init.method === 'POST') {
       if (body instanceof FormData) {
-        axiosConfig.data = body;
-        if (!axiosHeaders['Content-Type']) {
-          axiosHeaders['Content-Type'] = 'multipart/form-data';
+        if (!init.headers.has('Content-Type')) {
+          init.headers.set('Content-Type', 'multipart/form-data');
         }
+        init.body = body;
       } else {
-        axiosConfig.data = body;
-        if (!axiosHeaders['Content-Type']) {
-          axiosHeaders['Content-Type'] = 'application/json';
+        if (!init.headers.has('Content-Type')) {
+          init.headers.set('Content-Type', 'application/json');
         }
+        init.body = JSON.stringify(body);
       }
     }
   }
 
-  const delay = setTimeout(() => {
-    controller.abort();
-  }, timeout);
-
-  return new Promise<{ error: Error; data: undefined } | { error: undefined; data: any }>((res) => {
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  return new Promise<{ error: Error; data: undefined } | { error: undefined; data: any }>((resolve) => {
     try {
-      axios(axiosConfig)
+      fetch(url, init)
         .then((response) => {
-          const contentType = response.headers['content-type'] || '';
-          let data = response.data;
-          
-          // axios 默认会根据 content-type 自动解析 JSON
-          // 如果不是 JSON，需要确保返回字符串格式
-          if (!contentType.includes('application/json')) {
-            // 如果 data 不是字符串，转换为字符串
-            if (typeof data !== 'string') {
-              data = String(data);
-            }
-          }
-          
-          res({ error: undefined, data });
+          const contentType = response.headers.get('content-type') || '';
+          return contentType.includes('application/json') ? response.json() : response.text();
         })
-        .catch((error) => {
-          console.error('error', error);
-          res({ error: new Error('网络错误，请稍后重试'), data: undefined });
-        })
-        .finally(() => {
-          clearTimeout(delay);
-        });
+        .then((data) => resolve({ error: undefined, data }))
+        .catch((error: unknown) =>
+          resolve({
+            error: error instanceof Error ? error : new Error('网络错误，请稍后重试'),
+            data: undefined,
+          })
+        )
+        .finally(() => clearTimeout(timeoutId));
     } catch (error) {
-      clearTimeout(delay);
-      res({ error: error as Error, data: undefined });
+      clearTimeout(timeoutId);
+      resolve({ error: error as Error, data: undefined });
     }
   });
 };

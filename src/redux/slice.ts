@@ -944,6 +944,10 @@ const missionSlice = createSlice({
         return;
       }
 
+      if (!task) {
+        return;
+      }
+
       state.list.push(task);
       // 将任务的所有作业加入作业队列
       state.job.list.push(
@@ -1305,7 +1309,7 @@ export const action = {
  * 合并所有 reducers
  * 使用 combineReducers 将各个 slice 的 reducer 合并成根 reducer
  */
-export const reducer = combineReducers<RootState>({
+export const reducer = combineReducers({
   app: appReducer,
   datasync: datasyncReducer,
   release: releaseReducer,

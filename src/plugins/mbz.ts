@@ -198,7 +198,7 @@ class MangaBZ extends Base {
     const $ = cheerio.load(text || '');
 
     const scriptContent =
-      ($('script:not([src])').toArray() as cheerio.TagElement[]).filter((script) =>
+      ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter((script) =>
         PATTERN_SCRIPT_MANGA_ID.test(script.children[0].data || '')
       )[0].children[0].data || '';
     const [, id] = scriptContent.match(PATTERN_SCRIPT_MANGA_ID) || [];
@@ -206,11 +206,11 @@ class MangaBZ extends Base {
     const cover = $('.detail-info img.detail-info-cover').first().attr('src');
     const title = $('.detail-info p.detail-info-title').first().text().trim();
     const author = (
-      $('.detail-info-tip > span').eq(0).children().toArray() as cheerio.TagElement[]
+      $('.detail-info-tip > span').eq(0).children().toArray() as LegacyCheerioElement[]
     ).map((a) => a.children[0].data || '');
     const statusLabel = $('.detail-info-tip > span').eq(1).text();
     const tag = (
-      $('.detail-info-tip > span').eq(2).children().toArray() as cheerio.TagElement[]
+      $('.detail-info-tip > span').eq(2).children().toArray() as LegacyCheerioElement[]
     ).map((a) => a.children[0].data || '');
     const latest = $('.detail-list-form-title span.s a').first().text() || '';
     const dateLabel = $('.detail-list-form-title').first().text() || '';
@@ -221,7 +221,7 @@ class MangaBZ extends Base {
     const [, YYYYMMDD] = dateLabel.match(PATTERN_YYYYMMDD) || [];
 
     const chapters = (
-      $('#chapterlistload a.detail-list-form-item').toArray() as cheerio.TagElement[]
+      $('#chapterlistload a.detail-list-form-item').toArray() as LegacyCheerioElement[]
     ).map((a) => {
       const chapterHref = a.attribs.href;
       const chapterTitle = (a.children[0].data || '').trim();
@@ -288,7 +288,7 @@ class MangaBZ extends Base {
     if (!PATTERN_EVAL.test(text || '')) {
       const $ = cheerio.load(text || '');
       const scriptContent =
-        ($('script:not([src])').toArray() as cheerio.TagElement[]).filter(
+        ($('script:not([src])').toArray() as LegacyCheerioElement[]).filter(
           (script) =>
             PATTERN_CHAPTER_TITLE.test(script.children[0].data || '') &&
             PATTERN_CHAPTER_DATE.test(script.children[0].data || '') &&

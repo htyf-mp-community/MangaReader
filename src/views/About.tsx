@@ -3,7 +3,7 @@ import {
   Icon,
   Text,
   Image,
-  Modal,
+  Box,
   Button,
   VStack,
   Center,
@@ -19,6 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SpinLoading from '@/components/SpinLoading';
 import PathModal from '@/components/PathModal';
 import jssdk from '@htyf-mp/js-sdk';
+import InTreeDialog from '@/components/InTreeDialog';
 
 const { backup, restore, clearCache, loadLatestRelease, setAndroidDownloadPath } = action;
 const christmasGif = require('@/assets/christmas.gif');
@@ -193,11 +194,11 @@ const About = () => {
         )}
       </VStack>
 
-      <Modal useRNModal size="xl" isOpen={isModalOpen} onClose={onModalClose}>
-        <Modal.Content>
-          <Modal.Header>警告</Modal.Header>
-          <Modal.Body>此操作会清空收藏列表、漫画数据、插件和观看设置，请谨慎！</Modal.Body>
-          <Modal.Footer>
+      <InTreeDialog visible={isModalOpen} onRequestClose={onModalClose}>
+        <VStack>
+          <Box px={4} py={3} borderBottomWidth={1} borderColor="gray.200"><Text fontSize="lg" fontWeight="bold">警告</Text></Box>
+          <Box px={4} py={4}><Text>此操作会清空收藏列表、漫画数据、插件和观看设置，请谨慎！</Text></Box>
+          <Box px={4} py={3} alignItems="flex-end">
             <Button.Group size="sm" space="sm">
               <Button px={5} variant="outline" colorScheme="coolGray" onPress={onModalClose}>
                 取消
@@ -206,9 +207,9 @@ const About = () => {
                 确认
               </Button>
             </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
+          </Box>
+        </VStack>
+      </InTreeDialog>
 
       <PathModal
         isOpen={isAlbumPathOpen}

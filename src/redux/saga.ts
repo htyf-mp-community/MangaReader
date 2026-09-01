@@ -42,7 +42,6 @@ import {
   fetchData,
   haveError,
   validate,
-  getLatestRelease,
   dictToPairs,
   pairsToDict,
   trycatch,
@@ -54,7 +53,7 @@ import {
   TemplateKey,
   serializeError,
 } from '@/utils';
-import { Alert, InteractionManager, PermissionsAndroid, Platform } from 'react-native';
+import { InteractionManager, PermissionsAndroid, Platform } from 'react-native';
 import { splitHash, combineHash, PluginMap } from '@/plugins';
 import { nanoid, Action, PayloadAction } from '@reduxjs/toolkit';
 import { action, initialState } from './slice';
@@ -62,25 +61,10 @@ import { Dirs, FileSystem } from 'react-native-file-access';
 import { CacheManager } from '@georstat/react-native-image-cache';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import { DocumentPickerResponse, pick } from '@react-native-documents/picker';
-import { createMMKV } from 'react-native-mmkv';
+import { appStorage as storage } from '@/utils/storage';
 import base64 from 'base-64';
 import dayjs from 'dayjs';
 import Share from 'react-native-share';
-
-// ==================== MMKV 存储配置 ====================
-
-/**
- * MMKV 存储实例
- * MMKV 是高性能的键值存储库，比 AsyncStorage 快得多
- * 
- * 配置说明：
- * - id: 存储实例的唯一标识
- * - encryptionKey: 加密密钥，用于数据加密存储（可选）
- */
-const storage = createMMKV({
-  id: 'manga-reader-storage',
-  encryptionKey: 'manga-reader-encryption-key',
-});
 
 import rootSchema from '@/schema/root.json';
 import dictSchema from '@/schema/dict.json';
@@ -105,7 +89,6 @@ const {
   clearCacheCompletion,
   // release
   loadLatestRelease,
-  loadLatestReleaseCompletion,
   // setting
   setMode,
   setLight,
@@ -682,7 +665,7 @@ function* batchUpdateSaga() {
         });
 
         if (fetchError) {
-          const [, seconds] = fetchError.message.match(/([0-9]+) ?s/) || [];
+          const [, seconds] = fetchError.match(/([0-9]+) ?s/) || [];
           const timeout = Math.min(Number(seconds), 60) * 1000;
 
           if (retry < 3) {
@@ -835,11 +818,11 @@ function* loadMangaSaga() {
         );
 
         if (loadMangaInfoError) {
-          yield put(loadMangaCompletion({ error: serializeError(loadMangaInfoError), actionId }));
+          yield put(loadMangaCompletion({ error: loadMangaInfoError, actionId }));
           return;
         }
         if (loadChapterListError) {
-          yield put(loadMangaCompletion({ error: serializeError(loadChapterListError), actionId }));
+          yield put(loadMangaCompletion({ error: loadChapterListError, actionId }));
           return;
         }
         if (!nonNullable(mangaInfo) || !nonNullable(chapterInfo)) {
@@ -1180,7 +1163,7 @@ function* thread() {
         });
       }
       yield put(endJob({ taskId, jobId, status: AsyncStatus.Fulfilled }));
-    } catch (e) {
+    } catch {
       yield put(endJob({ taskId, jobId, status: AsyncStatus.Rejected }));
     }
   }

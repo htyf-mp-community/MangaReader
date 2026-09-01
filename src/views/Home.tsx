@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useCallback, Fragment, FC, useEffect } from 'react';
+import React, { useMemo, useState, useCallback, Fragment } from 'react';
 import { action, useAppSelector, useAppDispatch } from '@/redux';
 import { nonNullable, AsyncStatus } from '@/utils';
-import { View, Text, HStack, Button, Modal, useDisclose } from 'native-base';
+import { Box, View, Text, HStack, Button, VStack, useDisclose } from 'native-base';
 import { useFocusEffect } from '@react-navigation/native';
 import VectorIcon from '@/components/VectorIcon';
 import Bookshelf from '@/components/Bookshelf';
@@ -9,6 +9,7 @@ import Rotate from '@/components/Rotate';
 import * as RootNavigation from '@/utils/navigation';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import jssdk from '@htyf-mp/js-sdk';
+import InTreeDialog from '@/components/InTreeDialog';
 
 const { batchUpdate, removeFavorites } = action;
 
@@ -147,13 +148,11 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
         itemOnLongPress={handleSelect}
         loading={loadStatus === AsyncStatus.Pending}
       />
-      <Modal useRNModal isOpen={isOpen} onClose={onClose} size="xl">
-        <Modal.Content>
-          <Modal.Header>确认</Modal.Header>
-          <Modal.Body>
-            <Text>从列表删除所选漫画？</Text>
-          </Modal.Body>
-          <Modal.Footer>
+      <InTreeDialog visible={isOpen} onRequestClose={onClose}>
+        <VStack>
+          <Box px={4} py={3} borderBottomWidth={1} borderColor="gray.200"><Text fontSize="lg" fontWeight="bold">确认</Text></Box>
+          <Box px={4} py={4}><Text>从列表删除所选漫画？</Text></Box>
+          <Box px={4} py={3} alignItems="flex-end">
             <Button.Group size="sm" space="sm">
               <Button px={5} variant="outline" colorScheme="gray" onPress={onClose}>
                 取消
@@ -162,9 +161,9 @@ const Home = ({ navigation: { navigate, setOptions } }: StackHomeProps) => {
                 确认
               </Button>
             </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
+          </Box>
+        </VStack>
+      </InTreeDialog>
     </Fragment>
   );
 };

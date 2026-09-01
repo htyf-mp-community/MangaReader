@@ -1,7 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { customTheme } from '@/utils';
-// choose @types/cheerio instead of default
-import '@types/cheerio';
 
 type CustomTheme = typeof customTheme;
 
@@ -10,18 +8,20 @@ declare module 'native-base' {
 }
 
 declare global {
+  /** 兼容旧版 Cheerio TagElement 的文本节点访问约定。 */
+  type LegacyCheerioElement = import('domhandler').Element & {
+    children: Array<import('domhandler').ChildNode & { data?: string }>;
+  };
   type GET = 'GET' | 'get';
   type POST = 'POST' | 'post';
 
   type ArrayFirst<T> = T extends [infer U, ...any[]] ? U : any;
 
-  type FetchResponseAction<T = undefined> = PayloadAction<
-    undefined extends T
-      ? { error?: string; actionId?: string }
-      :
-          | { error: string; data?: undefined; actionId?: string }
-          | { error?: undefined; data: T; actionId?: string }
-  >;
+  type FetchResponseAction<T = undefined> = PayloadAction<{
+    error?: string;
+    data?: T;
+    actionId?: string;
+  }>;
 
   type KeyValuePair = [string, string | null];
 
