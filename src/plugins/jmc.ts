@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage, ScrambleType } from '@/utils';
 import { Platform } from 'react-native';
 import * as cheerio from 'cheerio';
@@ -86,7 +87,7 @@ class CopyManga extends Base {
         o: sort === Options.Default ? 'mr' : sort,
         page,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page, { time, sort }) => {
@@ -99,20 +100,20 @@ class CopyManga extends Base {
         o: sort === Options.Default ? 'mr' : sort,
         page,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://18comic.vip/album/${mangaId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
   prepareChapterFetch: Base['prepareChapterFetch'] = (_mangaId, chapterId) => {
     return {
       url: `https://18comic.vip/photo/${chapterId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

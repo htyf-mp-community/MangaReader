@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import dayjs from 'dayjs';
 import * as cheerio from 'cheerio';
@@ -81,19 +82,19 @@ class MangaBZ extends Base {
 
     return {
       url: `https://mangabz.com/manga-list-${type}-${status}-${sort}-p${page}/`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page) => {
     return {
       url: `https://mangabz.com/search?title=${keyword}&page=${page}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://mangabz.com/${mangaId}/`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
@@ -103,12 +104,12 @@ class MangaBZ extends Base {
       const mid = mangaId.replace('bz', '');
       return {
         url: `https://mangabz.com/${chapterId}/chapterimage.ashx?cid=${cid}&page=${page}&key=&_cid=${cid}&_mid=${mid}&_dt=${extra.date}&_sign=${extra.sign}`,
-        headers: new Headers(this.defaultHeaders),
+        headers: createRequestHeaders(this.defaultHeaders),
       };
     }
     return {
       url: `https://mangabz.com/${chapterId}/`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

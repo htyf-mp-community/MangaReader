@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import * as cheerio from 'cheerio';
 
@@ -131,7 +132,7 @@ class KL extends Base {
         sort: sortType,
         sort_type: sortOrder,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (
@@ -170,32 +171,32 @@ class KL extends Base {
         sort: sortType,
         sort_type: sortOrder,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://klmanga.net/hwms-${mangaId}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = (mangaId) => {
     return {
       url: `https://klmanga.net/app/manga/controllers/cont.listChapters.php?manga=${mangaId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, chapterId, _page, extra) => {
     if (typeof extra.cid === 'string') {
       return {
         url: `https://klmanga.net/app/manga/controllers/cont.listImg.php?cid=${extra.cid}`,
-        headers: new Headers(this.defaultHeaders),
+        headers: createRequestHeaders(this.defaultHeaders),
       };
     }
 
     return {
       url: `https://klmanga.net/bsaq-${mangaId}-chapter-${chapterId}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

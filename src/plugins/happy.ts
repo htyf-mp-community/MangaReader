@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import { Platform } from 'react-native';
 import * as cheerio from 'cheerio';
@@ -299,7 +300,7 @@ class HappyManga extends Base {
         series_status: status === Options.Default ? '-1' : status,
         order: 'last_date',
       },
-      headers: new Headers({ ...this.defaultHeaders, Referer: 'https://m.happymh.com/latest' }),
+      headers: createRequestHeaders({ ...this.defaultHeaders, Referer: 'https://m.happymh.com/latest' }),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword) => {
@@ -310,7 +311,7 @@ class HappyManga extends Base {
         searchkey: keyword,
         v: this.v,
       },
-      headers: new Headers({
+      headers: createRequestHeaders({
         ...this.defaultHeaders,
         Origin: 'https://m.happymh.com',
         Referer: 'https://m.happymh.com/sssearch',
@@ -320,7 +321,7 @@ class HappyManga extends Base {
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://m.happymh.com/manga/${mangaId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
@@ -332,7 +333,7 @@ class HappyManga extends Base {
         cid: chapterId,
         v: this.readv,
       },
-      headers: new Headers({
+      headers: createRequestHeaders({
         ...this.defaultHeaders,
         Referer: `https://m.happymh.com/mangaread/${mangaId}/${chapterId}`,
         /** 不是 XML 请求会返回 403 */

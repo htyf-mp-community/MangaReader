@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import queryString from 'query-string';
 import LZString from 'lz-string';
@@ -111,27 +112,27 @@ class ManHuaGui extends Base {
       url: `https://www.mhgui.com/list${query ? '/' + query : ''}/${
         sort === Options.Default ? 'index' : sort
       }_p${page}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page) => {
     return {
       url: `https://www.mhgui.com/s/${keyword}_p${page}.html`,
       method: 'POST',
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://www.mhgui.com/comic/${mangaId}/`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, chapterId) => {
     return {
       url: `https://www.mhgui.com/comic/${mangaId}/${chapterId}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

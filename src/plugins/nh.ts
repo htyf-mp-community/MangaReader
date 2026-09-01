@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import { Platform } from 'react-native';
 import dayjs from 'dayjs';
@@ -42,26 +43,26 @@ class NHentai extends Base {
   prepareDiscoveryFetch: Base['prepareDiscoveryFetch'] = (page) => {
     return {
       url: `https://nhentai.net/?page=${page}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page, { sort }) => {
     return {
       url: `https://nhentai.net/search/?q=${keyword}&page=${page}&sort=${sort}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://nhentai.net/g/${mangaId}/`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, _chapterId) => {
     return {
       url: `https://nhentai.net/g/${mangaId}/1`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import dayjs from 'dayjs';
 import * as cheerio from 'cheerio';
@@ -175,19 +176,19 @@ class DongManZhiJia extends Base {
 
     return {
       url: `https://m.idmzj.com/classify/${type}-0-${status}-${region}-${sort}-${page - 1}.json`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, _page) => {
     return {
       url: `https://m.idmzj.com/search/${keyword}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://m.idmzj.com/info/${mangaId}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
@@ -203,7 +204,7 @@ class DongManZhiJia extends Base {
         comic_id: mangaId,
         chapter_id: chapterId,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

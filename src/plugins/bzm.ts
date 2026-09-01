@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import { Platform } from 'react-native';
 import queryString from 'query-string';
@@ -142,19 +143,19 @@ class BaoziManga extends Base {
     return {
       url: 'https://cn.baozimhcn.com/api/bzmhq/amp_comic_list',
       body,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, _page) => {
     return {
       url: `https://cn.baozimhcn.com/search?q=${keyword}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://cn.baozimhcn.com/comic/${mangaId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
@@ -164,7 +165,7 @@ class BaoziManga extends Base {
         typeof extra.hash === 'string'
           ? `https://cn.czmanga.com/comic/chapter/${mangaId}_${extra.hash}/${chapterId}_${page}.html`
           : `https://cn.czmanga.com/comic/chapter/${mangaId}/${chapterId}_${page}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

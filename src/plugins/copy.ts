@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import { AESDecrypt } from '@/utils';
 
@@ -204,7 +205,7 @@ class CopyManga extends Base {
         top: region === Options.Default ? undefined : region,
         _update: 'true',
       },
-      headers: new Headers(this.fetchHeaders),
+      headers: createRequestHeaders(this.fetchHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page) => {
@@ -218,7 +219,7 @@ class CopyManga extends Base {
         q_type: '',
         _update: 'true',
       },
-      headers: new Headers({ ...this.fetchHeaders, platform: '2' }),
+      headers: createRequestHeaders({ ...this.fetchHeaders, platform: '2' }),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
@@ -227,20 +228,20 @@ class CopyManga extends Base {
       body: {
         platform: 1,
       },
-      headers: new Headers(this.fetchHeaders),
+      headers: createRequestHeaders(this.fetchHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = (mangaId) => {
     return {
       url: `https://www.mangacopy.com/comicdetail/${mangaId}/chapters`,
-      headers: new Headers({ 'User-Agent': this.userAgent || '' }),
+      headers: createRequestHeaders({ 'User-Agent': this.userAgent || '' }),
     };
   };
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, chapterId) => {
     return {
       url: `https://api.mangacopy.com/api/v3/comic/${mangaId}/chapter/${chapterId}`,
       body: { platform: 3 },
-      headers: new Headers({ 'User-Agent': this.userAgent || '' }),
+      headers: createRequestHeaders({ 'User-Agent': this.userAgent || '' }),
     };
   };
 

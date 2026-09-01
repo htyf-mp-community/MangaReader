@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import LZString from 'lz-string';
 import * as cheerio from 'cheerio';
@@ -98,26 +99,26 @@ class ManHuaMao extends Base {
       url: `https://www.maofly.com/list/a-${region === Options.Default ? 0 : region}-c-${
         type === Options.Default ? 0 : type
       }-t-0-y-0-i-0-m-${status === Options.Default ? 0 : status}-page-${page}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page) => {
     return {
       url: `https://www.maofly.com/search.html?q=${keyword}&page=${page}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://www.maofly.com/manga/${mangaId}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, chapterId) => {
     return {
       url: `https://www.maofly.com/manga/${mangaId}/${chapterId}.html`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

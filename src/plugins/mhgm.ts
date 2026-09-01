@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage } from '@/utils';
 import queryString from 'query-string';
 import LZString from 'lz-string';
@@ -141,7 +142,7 @@ class ManHuaGuiMobile extends Base {
         ajax: 1,
         order: sort === Options.Default ? '' : sort,
       },
-      headers: new Headers({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
+      headers: createRequestHeaders({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page, { sort }) => {
@@ -155,20 +156,20 @@ class ManHuaGuiMobile extends Base {
       url: `https://m.manhuagui.com/s/${keyword}_o${sort === Options.Default ? '0' : sort}.html/`,
       method: 'POST',
       body: page > 1 ? body : undefined,
-      headers: new Headers({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
+      headers: createRequestHeaders({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://m.manhuagui.com/comic/${mangaId}/`,
-      headers: new Headers({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
+      headers: createRequestHeaders({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
   prepareChapterFetch: Base['prepareChapterFetch'] = (mangaId, chapterId) => {
     return {
       url: `https://m.manhuagui.com/comic/${mangaId}/${chapterId}.html`,
-      headers: new Headers({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
+      headers: createRequestHeaders({ ...this.defaultHeaders, host: 'm.manhuagui.com' }),
     };
   };
 

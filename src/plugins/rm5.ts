@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { MangaStatus, ErrorMessage, ScrambleType } from '@/utils';
 import * as cheerio from 'cheerio';
 import dayjs from 'dayjs';
@@ -187,7 +188,7 @@ class RouMan5 extends Base {
         sort: sort === Options.Default ? undefined : sort,
         page,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareSearchFetch: Base['prepareSearchFetch'] = (keyword, page) => {
@@ -197,13 +198,13 @@ class RouMan5 extends Base {
         term: keyword,
         page,
       },
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareMangaInfoFetch: Base['prepareMangaInfoFetch'] = (mangaId) => {
     return {
       url: `https://rouman5.com/books/${mangaId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
   prepareChapterListFetch: Base['prepareChapterListFetch'] = () => {};
@@ -213,7 +214,7 @@ class RouMan5 extends Base {
         typeof extra.path === 'string'
           ? `https://rouman5.com${extra.path}`
           : `https://rouman5.com/books/${mangaId}/${chapterId}`,
-      headers: new Headers(this.defaultHeaders),
+      headers: createRequestHeaders(this.defaultHeaders),
     };
   };
 

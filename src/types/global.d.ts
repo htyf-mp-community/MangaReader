@@ -29,7 +29,7 @@ declare global {
     url: string;
     method?: GET | POST;
     body?: FormData | Record<string, any>;
-    headers?: Headers;
+    headers?: import('@/utils/fetch').RequestHeaders;
     timeout?: number;
   }
 

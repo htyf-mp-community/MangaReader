@@ -1,4 +1,5 @@
 import Base, { Plugin, Options } from './base';
+import { createRequestHeaders } from '@/utils/fetch';
 import { ellipsis, ErrorMessage, MangaStatus } from '@/utils';
 import { Buffer } from 'buffer';
 import queryString from 'query-string';
@@ -519,7 +520,7 @@ class PicaComic extends Base {
     const timestamp = (new Date().getTime() / 1000).toFixed(0);
     const nonce = this.randomString(32).toLowerCase();
 
-    return new Headers({
+    return createRequestHeaders({
       Time: timestamp,
       Nonce: nonce,
       Signature: this.getsignature(pathname, timestamp, method, nonce),
