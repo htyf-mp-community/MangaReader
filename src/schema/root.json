@@ -148,25 +148,7 @@
             ],
             "type": "number"
         },
-        "Plugin": {
-            "enum": [
-                "MHG",
-                "MHGM",
-                "COPY",
-                "MHDB",
-                "DMZJ",
-                "JMC",
-                "MHM",
-                "KL",
-                "NH",
-                "PICA",
-                "MBZ",
-                "BZM",
-                "RM5",
-                "HAPPY"
-            ],
-            "type": "string"
-        },
+        "Plugin": { "type": "string", "minLength": 2, "maxLength": 64 },
         "ReaderDirection": {
             "enum": [
                 "left",
@@ -734,4 +716,3 @@
     ],
     "type": "object"
 }
-

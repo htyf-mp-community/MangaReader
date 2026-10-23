@@ -16,6 +16,24 @@ import { Options } from '@/plugins/base';
 import { fetchData } from '@/utils/fetch';
 
 describe('HTYF 小程序请求运行时兼容', () => {
+  test('请求挂起且 AbortController 不可用时，超时也必须结束等待', async () => {
+    jest.useFakeTimers();
+    const originalAbort = (global as typeof global & { AbortController?: typeof AbortController }).AbortController;
+    const originalFetch = global.fetch;
+    Object.defineProperty(global, 'AbortController', { configurable: true, writable: true, value: undefined });
+    global.fetch = jest.fn(() => new Promise(() => {}));
+    try {
+      let completed = false;
+      const result = fetchData({ url: 'https://example.test', timeout: 50 }).then((value) => { completed = true; return value; });
+      await jest.advanceTimersByTimeAsync(51);
+      expect(completed).toBe(true);
+      expect((await result).error?.message).toContain('超时');
+    } finally {
+      global.fetch = originalFetch;
+      Object.defineProperty(global, 'AbortController', { configurable: true, writable: true, value: originalAbort });
+      jest.useRealTimers();
+    }
+  });
   test('BZM 生成请求时不依赖可构造的 Headers 全局对象', () => {
     const originalHeaders = global.Headers;
     Object.defineProperty(global, 'Headers', {
@@ -43,7 +61,8 @@ describe('HTYF 小程序请求运行时兼容', () => {
   });
 
   test('公共请求在 AbortController 不可构造时仍能获取数据', async () => {
-    const originalAbortController = global.AbortController;
+    const runtime = global as typeof global & { AbortController?: typeof AbortController };
+    const originalAbortController = runtime.AbortController;
     const originalFetch = global.fetch;
     Object.defineProperty(global, 'AbortController', {
       configurable: true,

@@ -301,7 +301,8 @@ abstract class Base {
    * @memberof Base
    */
   abstract handleMangaInfo(
-    response: any
+    response: any,
+    mangaId?: string
   ): { error: Error; manga?: undefined } | { error?: undefined; manga: IncreaseManga };
 
   /**

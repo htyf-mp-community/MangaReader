@@ -35,7 +35,8 @@ import {
   Animated,
 } from '@/utils';
 import { createSlice, combineReducers, PayloadAction } from '@reduxjs/toolkit';
-import { Plugin, defaultPlugin, defaultPluginList } from '@/plugins';
+import { Plugin, defaultPlugin, defaultPluginList, getLoadedPluginList } from '@/plugins';
+import { reconcilePluginList } from '@/utils/plugin-list';
 import { Dirs } from 'react-native-file-access';
 
 // ==================== 初始状态定义 ====================
@@ -445,13 +446,13 @@ const pluginSlice = createSlice({
      * 同步插件数据（从备份恢复时使用）
      */
     syncPlugin(_state, action: PayloadAction<RootState['plugin']>) {
-      return action.payload;
+      return { ...action.payload, list: reconcilePluginList(action.payload.list, getLoadedPluginList()) };
     },
   },
   extraReducers: (builder) => {
     // 清空缓存时重置插件
     builder.addCase(datasyncAction.clearCache, () => {
-      return initialState.plugin;
+      return { ...initialState.plugin, list: getLoadedPluginList() };
     });
   },
 });

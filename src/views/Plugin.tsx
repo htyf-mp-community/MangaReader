@@ -1,25 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DraggableFlatList, {
   ScaleDecorator,
   RenderItemParams,
 } from 'react-native-draggable-flatlist';
 import { action, useAppSelector, useAppDispatch } from '@/redux';
-import { Box, Text, VStack, HStack, Switch } from 'native-base';
+import { Box, Button, Input, Text, VStack, HStack, Switch } from 'native-base';
 import { useDebouncedSafeAreaInsets } from '@/hooks';
-import { Plugin as PluginType } from '@/plugins';
-import { TouchableOpacity } from 'react-native';
+import { Plugin as PluginType, registerUserSources } from '@/plugins';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import ScoreRate from '@/components/ScoreRate';
 import jssdk from '@htyf-mp/js-sdk';
+import InTreeDialog from '@/components/InTreeDialog';
+import { importUserSources } from '@/source-rules';
 
-const { sortPlugin, disablePlugin } = action;
+const { sortPlugin, disablePlugin, syncPlugin } = action;
+const styles = StyleSheet.create({ list: { flex: 1 } });
 
 const Plugin = ({ navigation: { navigate } }: StackPluginProps) => {
   const dispatch = useAppDispatch();
   const list = useAppSelector((state) => state.plugin.list);
+  const source = useAppSelector((state) => state.plugin.source);
+  const extra = useAppSelector((state) => state.plugin.extra);
+  const [showImport, setShowImport] = useState(false);
+  const [sourceJson, setSourceJson] = useState('');
   const { left, right, bottom } = useDebouncedSafeAreaInsets();
 
   const handleToggle = (plugin: PluginType) => {
     dispatch(disablePlugin(plugin));
+  };
+  const handleImport = () => {
+    try {
+      const imported = importUserSources(sourceJson);
+      registerUserSources(imported);
+      // 已存在源保留用户排序和开关；新增源由实时注册表自动追加。
+      dispatch(syncPlugin({ source, extra, list }));
+      setSourceJson('');
+      setShowImport(false);
+      jssdk.showToast({ type: 'success', title: `已导入 ${imported.length} 个漫画源` });
+    } catch (error) {
+      jssdk.showToast({ type: 'error', title: error instanceof Error ? error.message : '漫画源导入失败' });
+    }
   };
   const renderItem = ({ item, drag, isActive }: RenderItemParams<(typeof list)[0]>) => (
     <ScaleDecorator>
@@ -60,9 +80,13 @@ const Plugin = ({ navigation: { navigate } }: StackPluginProps) => {
   );
 
   return (
-    <Box position="relative">
+    <Box position="relative" flex={1}>
       {jssdk.AdBanner && <jssdk.AdBanner />}
+      <Button m={3} onPress={() => setShowImport(true)}>导入 JSON 漫画源</Button>
       <DraggableFlatList
+        // 拖拽组件外层 Animated.View 不继承内层 style，必须单独占满剩余高度。
+        containerStyle={styles.list}
+        style={styles.list}
         data={list}
         renderItem={renderItem}
         keyExtractor={(item) => item.value}
@@ -71,6 +95,23 @@ const Plugin = ({ navigation: { navigate } }: StackPluginProps) => {
       />
       {/* for navigation gesture go back */}
       <Box w={4} position="absolute" top={0} bottom={0} left={left} bg="transparent" />
+      <InTreeDialog visible={showImport} onRequestClose={() => setShowImport(false)} fullWidth>
+        <VStack w="full" p={4} space={3}>
+          <Text fontSize="lg" fontWeight="bold">导入 MangaReader JSON 漫画源</Text>
+          <Input
+            multiline
+            h={48}
+            textAlignVertical="top"
+            value={sourceJson}
+            onChangeText={setSourceJson}
+            placeholder="粘贴单个漫画源对象或漫画源数组"
+          />
+          <HStack justifyContent="flex-end" space={2}>
+            <Button variant="ghost" onPress={() => setShowImport(false)}>取消</Button>
+            <Button isDisabled={!sourceJson.trim()} onPress={handleImport}>导入</Button>
+          </HStack>
+        </VStack>
+      </InTreeDialog>
     </Box>
   );
 };

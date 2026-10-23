@@ -11,10 +11,16 @@
     "htyfAppId": "plugin_manga",
     "reactNativeVersion": "0.86.3"
   },
-  "migratedAt": "2026-09-01T09:08:00+08:00",
+  "migratedAt": "2026-09-03T17:47:52+08:00",
   "features": {
     "routes": "completed",
     "mangaSources": "completed",
+    "jsonSourceRuntime": "completed-v1",
+    "bzmFullyDeclarative": "completed",
+    "nhDeclarativeDiscovery": "completed",
+    "chapterPaginationAndTimeoutRegression": "fixture-tests-passed-device-verification-pending",
+    "loadedSourceRegistryList": "completed-includes-builtin-and-imported",
+    "jsonMangaSourceProtocolV1": "completed-with-builtin-extensions",
     "reader": "completed",
     "favoritesAndBatchUpdate": "completed",
     "downloadAndExport": "completed",

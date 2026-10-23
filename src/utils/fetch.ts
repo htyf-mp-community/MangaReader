@@ -76,8 +76,12 @@ export const fetchData = ({
     }
   }
 
-  const timeoutId = setTimeout(() => controller?.abort(), timeout);
   return new Promise<{ error: Error; data: undefined } | { error: undefined; data: any }>((resolve) => {
+    // 容器可能不支持取消请求，超时必须自行结算，不能只依赖 abort 的拒绝回调。
+    const timeoutId = setTimeout(() => {
+      resolve({ error: new Error('请求超时，请稍后重试'), data: undefined });
+      controller?.abort();
+    }, timeout);
     try {
       fetch(url, init)
         .then((response) => {

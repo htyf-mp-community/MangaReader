@@ -4,7 +4,7 @@
   "htyf": {
     "type": "app",
     "entry": "./src/index.tsx",
-    "version": "0.0.73",
+    "version": "0.0.81",
     "name": "MangaReader",
     "appid": "plugin_manga",
     "rotate": "portrait",
